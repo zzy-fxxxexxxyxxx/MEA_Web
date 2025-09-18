@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MEA Web</title>
+    <!-- 引入外部 CSS -->
+    <link rel="stylesheet" href="MEA.css" />
+  </head>
+
+  <body>
+    <!-- 左侧 -->
+    <div class="left-panel">
+      <div class="tab-buttons">
+        <button class="tablinks" onclick="openTab(event,'Tab1')">
+          Raw Data Explorer
+        </button>
+        <button class="tablinks" onclick="openTab(event,'Tab2')">
+          Heated Map
+        </button>
+        <button class="tablinks" onclick="openTab(event,'Tab3')">
+          Filtered Signal
+        </button>
+      </div>
+
+      <div id="Tab1" class="tabcontent">
+        <p>hahaha</p>
+      </div>
+      <div id="Tab2" class="tabcontent">
+        <p>左侧 Tab 2 内容</p>
+      </div>
+      <div id="Tab3" class="tabcontent">
+        <p>左侧 Tab 3 内容</p>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="panel" id="panel1">
+        <h3>Panel 1</h3>
+        <p>内容 1</p>
+      </div>
+      <div class="panel" id="panel2">
+        <h3>Panel 2</h3>
+        <p>内容 2</p>
+      </div>
+      <div class="panel" id="panel3">
+        <h3>Panel 3</h3>
+        <p>内容 3</p>
+      </div>
+      <div class="panel" id="panel4">
+        <h3>Panel 4</h3>
+        <p>内容 4</p>
+      </div>
+    </div>
+
+    <script src="MEA.js"></script>
+  </body>
+</html>

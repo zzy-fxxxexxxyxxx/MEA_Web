@@ -10,25 +10,19 @@
     <!-- 左侧 -->
     <div class="left-panel">
       <div class="tab-buttons">
-        <button class="tablinks" onclick="openTab(event,'Tab1')">
-          Raw Data Explorer
-        </button>
-        <button class="tablinks" onclick="openTab(event,'Tab2')">
-          Heated Map
-        </button>
-        <button class="tablinks" onclick="openTab(event,'Tab3')">
-          Filtered Signal
-        </button>
+        <button class="tablinks" data-tab="Tab1">Raw Data Explorer</button>
+        <button class="tablinks" data-tab="Tab2">Heated Map</button>
+        <button class="tablinks" data-tab="Tab3">Filtered Signal</button>
       </div>
 
       <div id="Tab1" class="tabcontent">
-        <!-- 横向排列输入框和按钮 -->
         <div class="input-button-group">
-          <input type="text" class="edit-field" placeholder="输入内容..." />
+          <input type="text" class="edit-field" />
+
           <button id="submitBtn">文件</button>
-          <!-- 隐藏的文件选择框 -->
-          <input type="file" id="fileInput" style="display: none" />
+          
         </div>
+        <div id="output"></div>
 
         <div class="spinner-group">
           <label for="voltage">Voltage:</label>
@@ -100,6 +94,6 @@
       </div>
     </div>
 
-    <script src="MEA.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>

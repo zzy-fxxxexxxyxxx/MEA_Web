@@ -8,7 +8,7 @@ import {
   readH5File,
 } from "./def.js";
 
-//----------------------------------------------------------------------------------------------------
+//------------------------------------DOMContentLoaded----------------------------------------------------------------
 
 // 等页面加载完成再执行下面的逻辑
 document.addEventListener("DOMContentLoaded", async () => {
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 画 panel3 和 panel4 的坐标系
   drawAxes("chart1");
   drawAxes("chart2");
-  //----------------------------------------------------
+  //---------------------------数据预处理-------------------------
   await h5wasm.ready; // 等待 wasm 初始化完成
 
   document.getElementById("submitBtn").addEventListener("click", async () => {
@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function transposeInfoChannel(infoChannelArray) {
       const result = {};
-
       // 遍历所有行（对象）
       infoChannelArray.forEach((row) => {
         Object.entries(row).forEach(([key, value]) => {
@@ -83,7 +82,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           result[key].push(value);
         });
       });
-
       return result;
     }
 
@@ -96,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       "改造后的 InfoChannel:",
       h5Data.Data.Recording_0.AnalogStream.Stream_0.InfoChannel
     );
-    document.getElementById("output").textContent += "\n文件读取成功 ✅";
+    document.getElementById("output").textContent += "\n文件读取成功 ✅\n";
 
     try {
       const processedData = await data_preprocessing(h5Data);

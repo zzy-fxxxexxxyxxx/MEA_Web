@@ -30,8 +30,7 @@ export function drawAxes(canvasId) {
   ctx.stroke();
 }
 
-//------------------------------------------------------------------------------------------------
-
+//-------------------------------数据预处理-----------------------------------------------------------------
 export async function readH5File(file) {
   // 先把文件写入虚拟文件系统
   const buffer = await file.arrayBuffer();
@@ -58,126 +57,6 @@ export async function readH5File(file) {
   f.close();
   return data;
 }
-
-// export function preprocessH5Data(h5Data) {
-//   const result = {};
-
-//   // 1. 获取 infoChannel
-//   const infoChannel = h5Data.Data.Recording_0.AnalogStream.Stream_0.InfoChannel;
-
-//   // 采样率 fs
-//   result.fs = 1e6 / infoChannel.Tick[0];
-
-//   // 单位
-//   result.dataUnit = Math.pow(10, infoChannel.Exponent[0]);
-
-//   // rawDataFactor
-//   result.rawDataFactor = infoChannel.ConversionFactor.map(
-//     (cf) => cf * result.dataUnit
-//   );
-
-//   // layout
-//   result.layout = [];
-//   for (let i = 0; i < 60; i++) {
-//     const label = parseInt(infoChannel.Label[i]);
-//     result.layout.push(isNaN(label) ? 0 : label); // Ref electrode 标记为0
-//   }
-
-//   return result;
-// }
-
-// function getRawData(h5Data, rawDataFactor) {
-//   const channelData = h5Data.Data.Recording_0.AnalogStream.Stream_0.ChannelData;
-//   const numChannels =
-//     channelData[0].length || channelData[0].length === 0
-//       ? channelData[0].length
-//       : channelData.length;
-
-//   // 转为二维数组，逐通道乘以 rawDataFactor
-//   const Raw_data = channelData.map((row) =>
-//     row.map((val, idx) => val * rawDataFactor[idx])
-//   );
-
-//   return Raw_data;
-// }
-
-// export function detectPeaks(Raw_data, thresholdFactor = 4, minPeakDistance = 170) {
-//   const numSamples = Raw_data.length;
-//   const numChannels = Raw_data[0].length;
-
-//   const peakArriveTime = Array.from({ length: numSamples }, () =>
-//     Array(numChannels).fill(NaN)
-//   );
-
-//   const peakNum = Array(numChannels).fill(0);
-
-//   for (let ch = 0; ch < numChannels; ch++) {
-//     const channelData = Raw_data.map((row) => row[ch]);
-//     const mean = channelData.reduce((a, b) => a + b, 0) / numSamples;
-//     const std = Math.sqrt(
-//       channelData.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) /
-//         numSamples
-//     );
-//     const threshold = mean + thresholdFactor * std;
-
-//     let lastPeak = -minPeakDistance;
-//     const peaks = [];
-//     const locs = [];
-
-//     for (let i = 0; i < channelData.length; i++) {
-//       if (channelData[i] > threshold && i - lastPeak >= minPeakDistance) {
-//         peaks.push(channelData[i]);
-//         locs.push(i);
-//         lastPeak = i;
-//       }
-//     }
-
-//     peakNum[ch] = locs.length;
-
-//     // 填入 peakArriveTime
-//     locs.forEach((loc, idx) => {
-//       peakArriveTime[idx][ch] = loc;
-//     });
-//   }
-
-//   // active electrodes 判断
-//   const modePeakNum = mode(peakNum.filter((v) => v !== 0));
-//   const activeElectrodes = peakNum.map((num) => num === modePeakNum);
-
-//   // 只保留 active electrodes
-//   const peakArriveTimeActive = peakArriveTime.map((row) =>
-//     row.map((val, ch) => (activeElectrodes[ch] ? val : NaN))
-//   );
-
-//   // 以第一个通道为参考计算时间差
-//   const peakArriveTimeDiff = peakArriveTimeActive.map((row) =>
-//     row.map((val, ch) => (!isNaN(val) && !isNaN(row[0]) ? val - row[0] : NaN))
-//   );
-
-//   return { peakArriveTime: peakArriveTimeDiff, activeElectrodes };
-// }
-
-// // 辅助函数：求众数
-// export function mode(arr) {
-//   const freq = {};
-//   arr.forEach((v) => (freq[v] = (freq[v] || 0) + 1));
-//   return Object.keys(freq).reduce((a, b) => (freq[a] > freq[b] ? a : b));
-// }
-
-// // 读取到h5Data后的与预处理步骤综合
-// export async function data_preprocessing(h5Data) {
-//   const result = preprocessH5Data(h5Data);
-//   result.Raw_data = getRawData(h5Data, result.rawDataFactor);
-
-//   const { peakArriveTime, activeElectrodes } = detectPeaks(result.Raw_data);
-
-//   result.peakArriveTime = peakArriveTime;
-//   result.activeElectrodes = activeElectrodes;
-
-//   return result;
-// }
-
-// helpers
 
 export function mode(arr) {
   const freq = {};

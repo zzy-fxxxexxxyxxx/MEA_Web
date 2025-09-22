@@ -7,6 +7,8 @@ import {
   mode,
   readH5File,
 } from "./def.js";
+import { drawGridOnPanel1, plotWaveformsOnGrid } from "./Panel1_def.js";
+import { originalPeakEnlargement } from "./Panel3_def.js";
 
 //------------------------------------DOMContentLoaded----------------------------------------------------------------
 
@@ -32,6 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   drawAxes("chart2");
   //---------------------------数据预处理-------------------------
   await h5wasm.ready; // 等待 wasm 初始化完成
+
+  let processedData = null; // 外部定义
 
   document.getElementById("submitBtn").addEventListener("click", async () => {
     const [fileHandle] = await window.showOpenFilePicker({
@@ -96,18 +100,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     document.getElementById("output").textContent += "\n文件读取成功 ✅\n";
 
-    try {
-      const processedData = await data_preprocessing(h5Data);
+    processedData = await data_preprocessing(h5Data);
 
-      console.log("fs:", processedData.fs);
-      console.log("Raw_data:", processedData.Raw_data);
-      console.log("layout:", processedData.layout);
-      console.log("peakArriveTime:", processedData.peakArriveTime);
+    console.log("fs:", processedData.fs);
+    console.log("Raw_data:", processedData.Raw_data);
+    console.log("layout:", processedData.layout);
+    console.log("peakArriveTime:", processedData.peakArriveTime);
 
-      document.getElementById("output").textContent += "\n数据处理成功 ✅";
-    } catch (err) {
-      document.getElementById("output").textContent +=
-        "\n❌ 数据处理出错: " + err.message;
-    }
+    document.getElementById("output").textContent += "\n数据处理成功 ✅";
+  });
+
+  //------------------------------------Panel 1--------------------------------------------------------------------
+  drawGridOnPanel1();
+
+  //------------------------------------Panel 1，3--------------------------------------------------------------------
+  document.getElementById("plot").addEventListener("click", () => {
+    plotWaveformsOnGrid(processedData); // processedData 是你 data_preprocessing 的结果
+    originalPeakEnlargement(processedData); // processedData 是你前面 data_preprocessing 的结果
   });
 });

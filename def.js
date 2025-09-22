@@ -94,8 +94,8 @@ export function preprocessH5Data(h5Data) {
   result.dataUnit = Math.pow(10, exp0);
 
   // rawDataFactor（确保 ConversionFactor 中的 BigInt 转为 Number）
-  result.rawDataFactor = (infoChannel.ConversionFactor || []).map((cf) =>
-    cf * result.dataUnit
+  result.rawDataFactor = (infoChannel.ConversionFactor || []).map(
+    (cf) => cf * result.dataUnit
   );
 
   // layout：Label 可能为字符串或 cell，尝试 parseInt
@@ -125,19 +125,30 @@ export function getRawData(h5Data, rawDataFactor) {
   }
 
   // case A: already 2D array (Array of Arrays)
-  if (Array.isArray(channelData) && channelData.length > 0 && Array.isArray(channelData[0])) {
-    return channelData.map((row) => row.map((val, idx) => val * rawDataFactor[idx]));
+  if (
+    Array.isArray(channelData) &&
+    channelData.length > 0 &&
+    Array.isArray(channelData[0])
+  ) {
+    return channelData.map((row) =>
+      row.map((val, idx) => val * rawDataFactor[idx])
+    );
   }
 
   // case B: typed array or flat JS array (扁平数组)
   if (ArrayBuffer.isView(channelData) || Array.isArray(channelData)) {
     // convert to normal array of numbers (for easier indexing)
-    const flat = Array.from(channelData).map((v) => (typeof v === "bigint" ? Number(v) : v));
+    const flat = Array.from(channelData).map((v) =>
+      typeof v === "bigint" ? Number(v) : v
+    );
     const total = flat.length;
     const numSamples = Math.floor(total / numChannels);
     if (numSamples * numChannels !== total) {
       // 如果不能整除，给出警告但仍尝试按最小完整行数处理
-      console.warn("ChannelData 长度不是 numChannels 的整数倍，按完整行数截断。", { total, numChannels, numSamples });
+      console.warn(
+        "ChannelData 长度不是 numChannels 的整数倍，按完整行数截断。",
+        { total, numChannels, numSamples }
+      );
     }
 
     const Raw_data = new Array(numSamples);
@@ -157,14 +168,20 @@ export function getRawData(h5Data, rawDataFactor) {
 }
 
 // 峰值检测（保留你原来的算法思路，但修正若干细节）
-export function detectPeaks(Raw_data, thresholdFactor = 4, minPeakDistance = 170) {
+export function detectPeaks(
+  Raw_data,
+  thresholdFactor = 4,
+  minPeakDistance = 170
+) {
   if (!Raw_data || Raw_data.length === 0) throw new Error("Raw_data 为空");
   const numSamples = Raw_data.length;
   const numChannels = Raw_data[0].length;
 
   // 我们用 MAX_PEAK_SLOTS 而不是 numSamples 作为峰的位置容器行数（更接近原 MATLAB 逻辑）
   const MAX_PEAK_SLOTS = 1000;
-  const peakLocs = Array.from({ length: MAX_PEAK_SLOTS }, () => Array(numChannels).fill(NaN));
+  const peakLocs = Array.from({ length: MAX_PEAK_SLOTS }, () =>
+    Array(numChannels).fill(NaN)
+  );
   const peakNum = Array(numChannels).fill(0);
 
   for (let ch = 0; ch < numChannels; ch++) {
@@ -173,14 +190,22 @@ export function detectPeaks(Raw_data, thresholdFactor = 4, minPeakDistance = 170
     for (let i = 0; i < numSamples; i++) channel[i] = Raw_data[i][ch];
 
     const meanVal = channel.reduce((a, b) => a + b, 0) / numSamples;
-    const stdVal = Math.sqrt(channel.reduce((s, v) => s + (v - meanVal) * (v - meanVal), 0) / numSamples);
+    const stdVal = Math.sqrt(
+      channel.reduce((s, v) => s + (v - meanVal) * (v - meanVal), 0) /
+        numSamples
+    );
     const threshold = meanVal + thresholdFactor * stdVal;
 
     let lastPeak = -minPeakDistance;
     const locs = [];
 
     for (let i = 1; i < channel.length - 1; i++) {
-      if (channel[i] > threshold && i - lastPeak >= minPeakDistance && channel[i] > channel[i-1] && channel[i] > channel[i+1]) {
+      if (
+        channel[i] > threshold &&
+        i - lastPeak >= minPeakDistance &&
+        channel[i] > channel[i - 1] &&
+        channel[i] > channel[i + 1]
+      ) {
         locs.push(i);
         lastPeak = i;
         if (locs.length >= MAX_PEAK_SLOTS) break;
@@ -198,7 +223,9 @@ export function detectPeaks(Raw_data, thresholdFactor = 4, minPeakDistance = 170
   const activeElectrodes = peakNum.map((n) => n === modePeakNum);
 
   // 仅保留 active electrodes 的数据
-  const peakArriveTime = peakLocs.map((row) => row.map((val, ch) => (activeElectrodes[ch] ? val : NaN)));
+  const peakArriveTime = peakLocs.map((row) =>
+    row.map((val, ch) => (activeElectrodes[ch] ? val : NaN))
+  );
 
   // 将以第一个 active electrode 为参考（若第一个通道没有有效数据需做判断）
   // 找到第一个 active 通道索引
@@ -223,3 +250,5 @@ export async function data_preprocessing(h5Data) {
   result.activeElectrodes = activeElectrodes;
   return result;
 }
+
+

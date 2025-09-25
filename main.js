@@ -1,14 +1,10 @@
 import * as h5wasm from "https://cdn.jsdelivr.net/npm/h5wasm@0.7.8/dist/esm/hdf5_hl.js";
 
-import {
-  openTab,
-  drawAxes,
-  data_preprocessing,
-  mode,
-  readH5File,
-} from "./def.js";
+import { openTab, drawAxes } from "./def.js";
+import { data_preprocessing, mode, readH5File } from "./DataProcess.js";
 import { drawGridOnPanel1, plotWaveformsOnGrid } from "./Panel1_def.js";
 import { originalPeakEnlargement } from "./Panel3_def.js";
+import { drawGridOnPanel2,drawElectrodeHeatmap } from "./Panel2_def.js";
 
 //------------------------------------DOMContentLoaded----------------------------------------------------------------
 
@@ -110,12 +106,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("output").textContent += "\n数据处理成功 ✅";
   });
 
-  //------------------------------------Panel 1--------------------------------------------------------------------
+  //------------------------------------Panel 1,2初始化--------------------------------------------------------------------
   drawGridOnPanel1();
+  drawGridOnPanel2();
 
   //------------------------------------Panel 1，3--------------------------------------------------------------------
-  document.getElementById("plot").addEventListener("click", () => {
+  document.getElementById("plot1").addEventListener("click", () => {
     plotWaveformsOnGrid(processedData); // processedData 是你 data_preprocessing 的结果
     originalPeakEnlargement(processedData); // processedData 是你前面 data_preprocessing 的结果
+  });
+    //------------------------------------Panel 2--------------------------------------------------------------------
+  document.getElementById("plot2").addEventListener("click", () => {
+    drawElectrodeHeatmap(processedData);
   });
 });

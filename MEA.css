@@ -99,7 +99,7 @@ body {
 }
 
 .number-spinner {
-  width: 80px; /* 输入框宽度，可根据需要调整 */
+  width: 60px; /* 输入框宽度，可根据需要调整 */
   padding: 4px;
 }
 
@@ -109,7 +109,7 @@ body {
 
 /* 右侧主内容区域 */
 .right-panel {
-  width: 80%; /* 右五分之四 */
+  width: 85%; /* 右五分之四 */
   padding: 10px;
   box-sizing: border-box;
   display: grid;

@@ -75,11 +75,24 @@
           />
         </div>
 
-        <button id="plot" style="margin-top: 20px">Plot</button>
+        <button id="plot1" style="margin-top: 20px">Plot</button>
       </div>
 
       <div id="Tab2" class="tabcontent">
-        <p>左侧 Tab 2 内容</p>
+        <div class="spinner-group">
+          <label for="time">Time:</label>
+          <input
+            type="number"
+            id="time"
+            class="number-spinner"
+            value="0.1"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <button id="plot2" style="margin-top: 20px">Plot</button>
       </div>
       <div id="Tab3" class="tabcontent">
         <p>左侧 Tab 3 内容</p>
@@ -92,8 +105,7 @@
       </div>
 
       <div class="panel" id="panel2">
-        <h3>Panel 2</h3>
-        <p>内容 2</p>
+        <canvas id="panel2Canvas"></canvas>
       </div>
 
       <div class="panel" id="panel3">

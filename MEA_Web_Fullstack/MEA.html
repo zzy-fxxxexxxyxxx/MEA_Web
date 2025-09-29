@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MEA Web</title>
+    <!-- 引入外部 CSS -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='MEA.css') }}" />
+    <!-- <link
+      rel="icon"
+      type="image/x-icon"
+      href="../static/favicon.ico"
+    />
+    <link rel="stylesheet" href="../static/MEA.css"> -->
+  </head>
+
+  <body>
+    <!-- 左侧 -->
+    <div class="left-panel">
+      <div class="tab-buttons">
+        <button class="tablinks" data-tab="Tab1">Raw Data Explorer</button>
+        <button class="tablinks" data-tab="Tab2">Heated Map</button>
+        <button class="tablinks" data-tab="Tab3">Filtered Signal</button>
+      </div>
+
+      <div id="Tab1" class="tabcontent">
+        <div class="input-button-group">
+          <input type="text" class="edit-field" />
+
+          <button id="submitBtn">文件</button>
+        </div>
+        <div id="output"></div>
+
+        <div class="spinner-group">
+          <label for="voltage">Voltage:</label>
+          <input
+            type="number"
+            id="voltage"
+            class="number-spinner"
+            value="0.0001"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <div class="spinner-group">
+          <label for="start_time">Start Time:</label>
+          <input
+            type="number"
+            id="start_time"
+            class="number-spinner"
+            value="1"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <div class="spinner-group">
+          <label for="time_interval">Time Interval:</label>
+          <input
+            type="number"
+            id="time_interval"
+            class="number-spinner"
+            value="0.1"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <div class="spinner-group">
+          <label for="tab">Tab:</label>
+          <input
+            type="number"
+            id="tab"
+            class="number-spinner"
+            value="44"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <button id="plot1" style="margin-top: 20px">Plot</button>
+      </div>
+
+      <div id="Tab2" class="tabcontent">
+        <div class="spinner-group">
+          <label for="epoch">Epoch:</label>
+          <input
+            type="number"
+            id="epoch"
+            class="number-spinner"
+            value="0"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <button id="plot2" style="margin-top: 20px">Plot</button>
+      </div>
+      <div id="Tab3" class="tabcontent">
+        <p>左侧 Tab 3 内容</p>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="panel" id="panel1">
+        <canvas id="panel1Canvas"></canvas>
+      </div>
+
+      <div class="panel" id="panel2">
+        <canvas id="panel2Canvas"></canvas>
+      </div>
+
+      <div class="panel" id="panel3">
+        <canvas id="canvas1" class="plot-canvas"></canvas>
+      </div>
+
+      <div class="panel" id="panel4">
+        <canvas id="canvas2" class="plot-canvas"></canvas>
+      </div>
+    </div>
+
+    <script
+      type="module"
+      src="{{ url_for('static', filename='main.js') }}"
+    ></script>
+    <!-- <script type="module" src="../static/main.js"></script> -->
+  </body>
+</html>

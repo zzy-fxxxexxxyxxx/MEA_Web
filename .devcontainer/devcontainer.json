@@ -1,0 +1,28 @@
+{
+  "name": "MEA_Web Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",                               // Python
+        "ms-python.vscode-pylance",                       // Pylance
+        "ms-python.python-extension-pack",               // Python Debugger & Environments
+        "ms-python.black-formatter",                      // Black Formatter
+        "ritwickdey.LiveServer",                          // Live Server
+        "esbenp.prettier-vscode",                         // Prettier
+        "ecmel.vscode-htmlhint",                          // HTMLHint
+        "khoih-prog.vscode-code-translator",             // Code Translate
+        "liviuschera.search-translate-hero",             // Search/Translate Hero
+        "vscode-icons-team.vscode-icons",                // VSCode Icons
+        "GitHub.copilot"                                 // GitHub Copilot
+      ]
+    }
+  },
+
+  "postCreateCommand": "python -m venv MEA311 && source MEA311/bin/activate && pip install -r MEA_Web_Fullstack/requirements.txt",
+
+  "forwardPorts": [5000, 5500],
+
+  "remoteUser": "vscode"
+}

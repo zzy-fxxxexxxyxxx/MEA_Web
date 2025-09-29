@@ -26,4 +26,5 @@ export function drawAxes(canvasId) {
   ctx.moveTo(20, canvas.height - 20);
   ctx.lineTo(20, 20);
   ctx.stroke();
+
 }

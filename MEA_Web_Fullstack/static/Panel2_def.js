@@ -1,3 +1,7 @@
+import {inpaint_nans} from "./inpaint_nans.js"
+
+
+
 /**
  * 根据 colorPickValue 返回自定义颜色数组
  * @param {string} colorPickValue - "color1" ~ "color6"
@@ -201,26 +205,7 @@ export function drawGridOnPanel2() {
   ctx.stroke();
 }
 
-async function inpaint_nans_api(matrix, method = 0) {
-  try {
-    const response = await fetch("/inpaint", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matrix, method }),
-    });
-    const data = await response.json();
 
-    if (data.error) {
-      console.error("MATLAB 插值出错:", data.error);
-      return matrix; // 出错就返回原矩阵
-    }
-
-    return data.matrix;
-  } catch (err) {
-    console.error("请求失败:", err);
-    return matrix; // 出错就返回原矩阵
-  }
-}
 
 /**
  * 处理某一时刻 (t0) 的峰到达时间数据，并生成插值后的矩阵
@@ -278,10 +263,10 @@ export async function HeatCalculate(t0Row, fs, layout) {
   B.push(row);
   let processData = B.map((r) => [...r, NaN]);
 
-  console.log({ processData });
+  console.log({ processData }); //正确
 
   // === Step 7: 插值 ===
-  processData = await inpaint_nans_api(processData, 0);
+  processData =  inpaint_nans(processData);
 
   // === Step 8: 四个角设 NaN ===
   processData[0][0] = NaN;

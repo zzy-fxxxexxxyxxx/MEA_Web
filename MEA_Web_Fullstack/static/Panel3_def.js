@@ -1,13 +1,13 @@
 //------------------局部放大--------------------------------------------------------------------------
 export function originalPeakEnlargement(processedData) {
   // 1️⃣ 从页面获取用户输入的开始时间等等
-  const plotStartTime = parseFloat(document.getElementById("start_time").value);
+  const plotStartTime = parseFloat(document.getElementById("start_time1").value);
   const intervalTime = parseFloat(
-    document.getElementById("time_interval").value
+    document.getElementById("time_interval1").value
   );
   const fs = processedData.fs;
   const voltageRange = parseFloat(document.getElementById("voltage").value);
-  const tabValue = parseInt(document.getElementById("tab").value);
+  const tabValue = parseInt(document.getElementById("tab1").value);
 
   const layout = processedData.layout;
   const Raw_data = processedData.Raw_data;

@@ -6,7 +6,7 @@ import * as h5wasm from "https://cdn.jsdelivr.net/npm/h5wasm@0.7.8/dist/esm/hdf5
 // import { originalPeakEnlargement } from "/static/Panel3_def.js";
 // import { drawGridOnPanel2, drawElectrodeHeatmap } from "/static/Panel2_def.js";
 
-import { openTab, drawAxes } from "./def.js";
+import { openTab, drawAxes } from "./basic_func.js";
 import {
   toNumberIfBigInt,
   data_preprocessing,
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 获取所有按钮和内容
   const tabButtons = document.querySelectorAll(".tablinks");
   const tabContents = document.querySelectorAll(".tabcontent");
-  // 给按钮绑定事件
+  // 左侧顶端tab选择，给按钮绑定事件
   tabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const tabName = btn.dataset.tab;

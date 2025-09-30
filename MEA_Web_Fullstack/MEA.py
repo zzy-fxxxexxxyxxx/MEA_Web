@@ -49,34 +49,6 @@ def index():
 #         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/inpaint", methods=["POST"])
-def inpaint_nans_api():
-    try:
-        # 1️⃣ 获取前端发送的矩阵
-        data = request.json.get("matrix")  # 前端 key 为 "matrix"
-
-        if data is None:
-            return jsonify({"error": "No matrix provided"}), 400
-
-        # 2️⃣ 将 None/NaN 转为 float('nan')
-        processed_data = [
-            [float(v) if v is not None else float("nan") for v in row] for row in data
-        ]
-
-        # 3️⃣ 转换成 MATLAB 矩阵
-        matlab_matrix = matlab.double(processed_data)
-
-        # 4️⃣ 调用 MATLAB inpaint_nans
-        result = eng.inpaint_nans(matlab_matrix, nargout=1)
-
-        # 5️⃣ 转换 MATLAB 矩阵为 Python 列表（二维数组）
-        result_list = [[float(val) for val in row] for row in result]
-
-        return jsonify({"matrix": result_list})
-
-    except Exception as e:
-        print("MATLAB 插值出错:", e)
-        return jsonify({"error": str(e)}), 500
 
 
 # =======================

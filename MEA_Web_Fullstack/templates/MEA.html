@@ -9,6 +9,7 @@
       href="{{ url_for('static', filename='favicon.ico') }}"
     />
     <link rel="stylesheet" href="{{ url_for('static', filename='MEA.css') }}" />
+    <!-- 如果是只用live sever测试前端，请用下面的路径 -->
     <!-- <link
       rel="icon"
       type="image/x-icon"
@@ -30,15 +31,24 @@
         <div class="input-button-group">
           <input type="text" class="edit-field" />
 
-          <button id="submitBtn">文件</button>
+          <button id="submitBtn" class="round-button">
+            <img
+              src="{{ url_for('static', filename='folder.svg') }}"
+              alt="Stickman"
+              width="22"
+              height="35"
+            />
+          </button>
+          <!-- 如果是只用live sever测试前端，请用下面的路径 -->
+          <!-- <button id="submitBtn" class=" round-button"><img src="../static/folder.svg" alt="Stickman" width="22" height="35"></button> -->
         </div>
         <div id="output"></div>
 
         <div class="spinner-group">
-          <label for="voltage">Voltage:</label>
+          <label for="voltage1">Voltage:</label>
           <input
             type="number"
-            id="voltage"
+            id="voltage1"
             class="number-spinner"
             value="0.0001"
             step="1"
@@ -108,6 +118,19 @@
 
       <div id="Tab3" class="tabcontent">
         <div class="spinner-group">
+          <label for="voltage3">Voltage:</label>
+          <input
+            type="number"
+            id="voltage3"
+            class="number-spinner"
+            value="0.0001"
+            step="1"
+            min="-1000"
+            max="1000"
+          />
+        </div>
+
+        <div class="spinner-group">
           <label for="start_time3">Start Time:</label>
           <input
             type="number"
@@ -172,6 +195,7 @@
       type="module"
       src="{{ url_for('static', filename='main.js') }}"
     ></script>
+    <!-- 如果是只用live sever测试前端，请用下面的路径 -->
     <!-- <script type="module" src="../static/main.js"></script> -->
   </body>
 </html>

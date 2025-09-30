@@ -5,23 +5,22 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-python.python",                               // Python
-        "ms-python.vscode-pylance",                       // Pylance
-        "ms-python.python-extension-pack",               // Python Debugger & Environments
-        "ms-python.black-formatter",                      // Black Formatter
-        "ritwickdey.LiveServer",                          // Live Server
-        "esbenp.prettier-vscode",                         // Prettier
-        "ecmel.vscode-htmlhint",                          // HTMLHint
-        "khoih-prog.vscode-code-translator",             // Code Translate
-        "liviuschera.search-translate-hero",             // Search/Translate Hero
-        "vscode-icons-team.vscode-icons",                // VSCode Icons
-        "GitHub.copilot"                                 // GitHub Copilot
+        "ms-python.python",                              
+        "ms-python.vscode-pylance",                      
+        "ms-python.python-extension-pack",               
+        "ms-python.black-formatter",                     
+        "ritwickdey.LiveServer",                         
+        "esbenp.prettier-vscode",                        
+        "ecmel.vscode-htmlhint",                         
+        "khoih-prog.vscode-code-translator",             
+        "liviuschera.search-translate-hero",             
+        "vscode-icons-team.vscode-icons",                
+        "GitHub.copilot"                                 
       ]
     }
   },
 
-  "postCreateCommand": "python -m venv MEA311 && source MEA311/bin/activate && pip install -r MEA_Web_Fullstack/requirements.txt",
-
+ 
   "forwardPorts": [5000, 5500],
 
   "remoteUser": "vscode"

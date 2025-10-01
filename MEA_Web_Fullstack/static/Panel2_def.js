@@ -1,6 +1,4 @@
-import {inpaint_nans} from "./inpaint_nans.js"
-
-
+import { inpaint_nans } from "./inpaint_nans.js";
 
 /**
  * 根据 colorPickValue 返回自定义颜色数组
@@ -205,8 +203,6 @@ export function drawGridOnPanel2() {
   ctx.stroke();
 }
 
-
-
 /**
  * 处理某一时刻 (t0) 的峰到达时间数据，并生成插值后的矩阵
  *
@@ -243,7 +239,7 @@ export async function HeatCalculate(t0Row, fs, layout) {
       if ((i === 0 || i === 7) && (j === 0 || j === 7)) continue;
       if (i === 4 && j === 0) continue;
 
-      const layoutVal = (j+1) * 10 + (i + 1);
+      const layoutVal = (j + 1) * 10 + (i + 1);
       const idx = layout.findIndex((v) => v === layoutVal);
       if (idx >= 0) {
         peakArriveTimeHeatmap[i][j] = showBuffer[idx];
@@ -266,7 +262,7 @@ export async function HeatCalculate(t0Row, fs, layout) {
   console.log({ processData }); //正确
 
   // === Step 7: 插值 ===
-  processData =  inpaint_nans(processData);
+  processData = inpaint_nans(processData);
 
   // === Step 8: 四个角设 NaN ===
   processData[0][0] = NaN;
@@ -279,7 +275,10 @@ export async function HeatCalculate(t0Row, fs, layout) {
   return processData;
 }
 
-export function drawSmoothHeatmapTransparentCorners(data, colorPickValue = "color1") {
+export function drawSmoothHeatmapTransparentCorners(
+  data,
+  colorPickValue = "color1"
+) {
   const canvas = document.getElementById("panel2Canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -301,7 +300,8 @@ export function drawSmoothHeatmapTransparentCorners(data, colorPickValue = "colo
 
   const customColors = ChooseColor(colorPickValue);
 
-  let minVal = Infinity, maxVal = -Infinity;
+  let minVal = Infinity,
+    maxVal = -Infinity;
   for (let i = 0; i < rows; i++)
     for (let j = 0; j < cols; j++)
       if (!isNaN(data[i][j])) {
@@ -311,7 +311,11 @@ export function drawSmoothHeatmapTransparentCorners(data, colorPickValue = "colo
 
   // 掩码矩阵：true=绘制，false=透明
   const mask = Array.from({ length: rows }, () => Array(cols).fill(true));
-  mask[0][0] = mask[0][cols - 1] = mask[rows - 1][0] = mask[rows - 1][cols - 1] = false;
+  mask[0][0] =
+    mask[0][cols - 1] =
+    mask[rows - 1][0] =
+    mask[rows - 1][cols - 1] =
+      false;
 
   // function valueToColor(val) {
   //   if (isNaN(val)) return [0, 0, 0, 0]; // alpha=0 表示透明
@@ -322,22 +326,22 @@ export function drawSmoothHeatmapTransparentCorners(data, colorPickValue = "colo
   // }
 
   function valueToColor(val) {
-  if (isNaN(val)) return [0, 0, 0, 0];
-  const t = (val - minVal) / (maxVal - minVal);
-  const scaled = t * (customColors.length - 1);
-  const idx = Math.floor(scaled);
-  const frac = scaled - idx; // 小数部分
+    if (isNaN(val)) return [0, 0, 0, 0];
+    const t = (val - minVal) / (maxVal - minVal);
+    const scaled = t * (customColors.length - 1);
+    const idx = Math.floor(scaled);
+    const frac = scaled - idx; // 小数部分
 
-  const [r1, g1, b1] = customColors[idx];
-  const [r2, g2, b2] = customColors[Math.min(idx + 1, customColors.length - 1)];
+    const [r1, g1, b1] = customColors[idx];
+    const [r2, g2, b2] =
+      customColors[Math.min(idx + 1, customColors.length - 1)];
 
-  const r = r1 + (r2 - r1) * frac;
-  const g = g1 + (g2 - g1) * frac;
-  const b = b1 + (b2 - b1) * frac;
+    const r = r1 + (r2 - r1) * frac;
+    const g = g1 + (g2 - g1) * frac;
+    const b = b1 + (b2 - b1) * frac;
 
-  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), 255];
-}
-
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), 255];
+  }
 
   const imgData = ctx.createImageData(canvas.width, canvas.height);
   for (let py = 0; py < canvas.height; py++) {
@@ -345,23 +349,36 @@ export function drawSmoothHeatmapTransparentCorners(data, colorPickValue = "colo
       const x = (px / canvas.width) * (cols - 1);
       const y = (py / canvas.height) * (rows - 1);
 
-      const x0 = Math.floor(x), x1 = Math.min(x0 + 1, cols - 1);
-      const y0 = Math.floor(y), y1 = Math.min(y0 + 1, rows - 1);
+      const x0 = Math.floor(x),
+        x1 = Math.min(x0 + 1, cols - 1);
+      const y0 = Math.floor(y),
+        y1 = Math.min(y0 + 1, rows - 1);
 
       // 四角透明判断
       let [r, g, b, a] = [0, 0, 0, 0]; // 默认透明
       if (mask[y0][x0] && mask[y0][x1] && mask[y1][x0] && mask[y1][x1]) {
         const v = [data[y0][x0], data[y0][x1], data[y1][x0], data[y1][x1]];
-        const valid = v.map(vv => isNaN(vv) ? 0 : vv);
-        const weight = v.map(vv => isNaN(vv) ? 0 : 1);
+        const valid = v.map((vv) => (isNaN(vv) ? 0 : vv));
+        const weight = v.map((vv) => (isNaN(vv) ? 0 : 1));
 
-        const wx0 = 1 - (x - x0), wx1 = x - x0;
-        const wy0 = 1 - (y - y0), wy1 = y - y0;
+        const wx0 = 1 - (x - x0),
+          wx1 = x - x0;
+        const wy0 = 1 - (y - y0),
+          wy1 = y - y0;
 
-        const sumWeight = weight[0] * wx0 * wy0 + weight[1] * wx1 * wy0 + weight[2] * wx0 * wy1 + weight[3] * wx1 * wy1;
+        const sumWeight =
+          weight[0] * wx0 * wy0 +
+          weight[1] * wx1 * wy0 +
+          weight[2] * wx0 * wy1 +
+          weight[3] * wx1 * wy1;
         let val = 0;
         if (sumWeight > 0) {
-          val = (valid[0] * wx0 * wy0 + valid[1] * wx1 * wy0 + valid[2] * wx0 * wy1 + valid[3] * wx1 * wy1) / sumWeight;
+          val =
+            (valid[0] * wx0 * wy0 +
+              valid[1] * wx1 * wy0 +
+              valid[2] * wx0 * wy1 +
+              valid[3] * wx1 * wy1) /
+            sumWeight;
         }
         [r, g, b, a] = valueToColor(val);
       }
@@ -448,5 +465,3 @@ function drawGridOverlay(ctx, cssWidth, cssHeight) {
   ctx.lineWidth = 2;
   ctx.stroke();
 }
-
-

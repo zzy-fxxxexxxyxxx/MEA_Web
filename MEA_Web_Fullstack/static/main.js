@@ -11,14 +11,16 @@ import {
   toNumberIfBigInt,
   data_preprocessing,
   readH5File,
+  detectPeaks,
 } from "./DataProcess.js";
 import { drawGridOnPanel1, plotWaveformsOnGrid } from "./Panel1_def.js";
 import { originalPeakEnlargement } from "./Panel3_def.js";
 import {
   drawGridOnPanel2,
   HeatCalculate,
-  drawSmoothHeatmapTransparentCorners
+  drawSmoothHeatmapTransparentCorners,
 } from "./Panel2_def.js";
+import { plotAllSignals } from "./Panel4_def.js";
 
 //------------------------------------DOMContentLoaded----------------------------------------------------------------
 
@@ -113,9 +115,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("fs:", processedData.fs);
     console.log("Raw_data:", processedData.Raw_data[1][0]);
     console.log("layout:", processedData.layout);
-    console.log("peakArriveTime:", processedData.peakArriveTime);
 
-    document.getElementById("output").textContent += "\n数据处理成功 ✅";
+    // document.getElementById("output").textContent += "\n数据处理成功 ✅";
   });
 
   //------------------------------------Panel 1,2初始化--------------------------------------------------------------------
@@ -127,7 +128,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     plotWaveformsOnGrid(processedData); // processedData 是你 data_preprocessing 的结果
     originalPeakEnlargement(processedData); // processedData 是你前面 data_preprocessing 的结果
   });
+
   //------------------------------------Panel 2--------------------------------------------------------------------
+
+  document
+    .getElementById("discharge_detection")
+    .addEventListener("click", async () => {
+      // 🔹 异步执行 detectPeaks
+      processedData = await detectPeaks(processedData, 60, 4);
+      document.getElementById("detection_result").value =
+        processedData.peakArriveTime.length;
+      document.getElementById("time").value =
+        processedData.peakBaseTimes[document.getElementById("epoch").value] - 1;
+      // 🔹 执行完成后恢复输入框可用并修改 title
+      document.getElementById("epoch-group").title =
+        "请输入不可超过放电次数的正整数";
+
+      const epochInput = document.getElementById("epoch");
+
+      epochInput.disabled = false;
+      epochInput.max = processedData.peakArriveTime.length;
+
+      epochInput.addEventListener("blur", () => {
+        const min = parseInt(epochInput.min, 10);
+        const max = parseInt(epochInput.max, 10);
+        const value = Number(epochInput.value);
+
+        // 检查是否为整数
+        if (!Number.isInteger(value)) {
+          alert("请输入整数！");
+          epochInput.value = 1;
+          epochInput.focus();
+          return;
+        }
+
+        // 检查范围
+        if (value < min || value > max) {
+          alert(`输入必须在 ${min} 和 ${max} 之间！`);
+          epochInput.value = 1;
+          epochInput.focus();
+          return;
+        }
+
+        // ✅ 合法值 -> 可以继续执行后面逻辑
+        // console.log("输入合法，可以继续执行逻辑:", value);
+        document.getElementById("time").value =
+          processedData.peakBaseTimes[document.getElementById("epoch").value] -
+          1;
+      });
+    });
+
   document.getElementById("plot2").addEventListener("click", async () => {
     // drawElectrodeHeatmap(processedData);
 
@@ -135,11 +185,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     let t0 = Math.round(Number(t0Input?.value) || 0);
 
     const HeatMapData = await HeatCalculate(
-      processedData.peakArriveTime[t0],
+      processedData.peakArriveTime[t0 - 1], //减去1来对其索引
       processedData.fs,
       processedData.layout
     );
-    
+
     drawSmoothHeatmapTransparentCorners(HeatMapData, "color1");
+  });
+
+  document.getElementById("plot3").addEventListener("click", async () => {
+    // 调用封装好的函数绘制
+    await plotAllSignals(processedData);
   });
 });

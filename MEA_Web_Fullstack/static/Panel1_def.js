@@ -84,12 +84,14 @@ export function plotWaveformsOnGrid(processedData) {
   const ctx = canvas.getContext("2d");
   const panel = document.getElementById("panel1");
 
-  const plotStartTime = parseFloat(document.getElementById("start_time1").value);
+  const plotStartTime = parseFloat(
+    document.getElementById("start_time1").value
+  );
   const intervalTime = parseFloat(
     document.getElementById("time_interval1").value
   );
   const fs = processedData.fs;
-  const voltageRange = parseFloat(document.getElementById("voltage").value);
+  const voltageRange = parseFloat(document.getElementById("voltage1").value);
   const layout = processedData.layout;
   const Raw_data = processedData.Raw_data;
 

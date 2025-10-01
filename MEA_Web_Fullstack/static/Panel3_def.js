@@ -1,12 +1,14 @@
 //------------------局部放大--------------------------------------------------------------------------
 export function originalPeakEnlargement(processedData) {
   // 1️⃣ 从页面获取用户输入的开始时间等等
-  const plotStartTime = parseFloat(document.getElementById("start_time1").value);
+  const plotStartTime = parseFloat(
+    document.getElementById("start_time1").value
+  );
   const intervalTime = parseFloat(
     document.getElementById("time_interval1").value
   );
   const fs = processedData.fs;
-  const voltageRange = parseFloat(document.getElementById("voltage").value);
+  const voltageRange = parseFloat(document.getElementById("voltage1").value);
   const tabValue = parseInt(document.getElementById("tab1").value);
 
   const layout = processedData.layout;
@@ -42,8 +44,8 @@ export function originalPeakEnlargement(processedData) {
   }
 
   // 3️⃣ 获取绘图数据
-const channelData = Raw_data[tabIndex].slice(startIdx, endIdx);
-   // 3️⃣1️⃣ 计算绝对时间
+  const channelData = Raw_data[tabIndex].slice(startIdx, endIdx);
+  // 3️⃣1️⃣ 计算绝对时间
   const t = Array.from(
     { length: channelData.length },
     (_, i) => plotStartTime + i / fs
@@ -51,7 +53,7 @@ const channelData = Raw_data[tabIndex].slice(startIdx, endIdx);
 
   // 4️⃣ 绘制到 canvas
   const canvas = document.getElementById("canvas1");
-  const ctx = canvas.getContext("2d");    //返回一个 绘图上下文对象，简称 ctx。这个对象提供了所有绘图方法
+  const ctx = canvas.getContext("2d"); //返回一个 绘图上下文对象，简称 ctx。这个对象提供了所有绘图方法
 
   // --- 高分辨率设置 ---
   const dpi = window.devicePixelRatio || 1;
@@ -64,7 +66,7 @@ const channelData = Raw_data[tabIndex].slice(startIdx, endIdx);
   ctx.lineWidth = 0.5; // 线条适中
   ctx.strokeStyle = "black";
 
-  ctx.clearRect(0, 0, width, height);   //清空画布原有内容
+  ctx.clearRect(0, 0, width, height); //清空画布原有内容
 
   // Canvas 坐标映射函数
   const xMin = plotStartTime,

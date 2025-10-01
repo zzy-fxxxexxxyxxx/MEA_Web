@@ -119,7 +119,7 @@ export function getRawData(h5Data, rawDataFactor) {
 // maxChannel = 通道总数
 // THRESHOLD_FACTOR 已定义
 // waitbar 函数可用回调或简单 console.log 代替
-function detectPeaks(obj, maxChannel, THRESHOLD_FACTOR) {
+export async function detectPeaks(obj, maxChannel, THRESHOLD_FACTOR) {
   const MAX_FIRING_RATE = 1000;
   const peakPks = Array.from({ length: MAX_FIRING_RATE }, () =>
     new Array(maxChannel).fill(0)
@@ -165,10 +165,18 @@ function detectPeaks(obj, maxChannel, THRESHOLD_FACTOR) {
     }
   }
 
+  console.log({ peakPks });
+  console.log({ peakLocs });
+  console.log({ peakNum });
+
   // 判断 Active electrodes
   const peakNumNonZero = peakNum.filter((v) => v !== 0);
   const peakNumSum = mode(peakNumNonZero);
   let activeElectrodes = peakNum.map((v) => v === peakNumSum);
+
+  console.log({ peakNumNonZero });
+  console.log({ peakNumSum });
+  console.log({ activeElectrodes });
 
   // 取第二个峰位置寻找离群值
   const peakLocs1 = peakLocs
@@ -222,6 +230,12 @@ function detectPeaks(obj, maxChannel, THRESHOLD_FACTOR) {
     );
   }
 
+   obj.peakBaseTimes = peakLocsReshaped.map(row => row[0]/obj.fs);
+  console.log({ peakLocsReshaped });
+   console.log({ peakLocsReshaped });
+   console.log( "peakBaseTimes" );
+   console.log( obj.peakBaseTimes );
+
   // 计算峰值到第一个通道的时间差
   const buffer = peakLocsReshaped.map((row) =>
     row.map((val, idx) => val - row[0])
@@ -237,13 +251,14 @@ function detectPeaks(obj, maxChannel, THRESHOLD_FACTOR) {
       obj.peakArriveTime[r][activeElectrodesSeries[c]] = buffer[r][c];
     }
   }
+  console.log("peakArriveTime");
   console.log(obj.peakArriveTime);
-  return obj.peakArriveTime;
+  return obj;
 }
 
 export async function data_preprocessing(h5Data) {
   const result = preprocessH5Data(h5Data);
   result.Raw_data = getRawData(h5Data, result.rawDataFactor);
-  result.peakArriveTime = detectPeaks(result, 60, 4);
+
   return result;
 }

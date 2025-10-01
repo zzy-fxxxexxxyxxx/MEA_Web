@@ -17,10 +17,13 @@ export function inpaint_nans(A2d) {
   // helpers
   function size(mat) {
     const n = mat.length;
-    const m = (n > 0 && Array.isArray(mat[0])) ? mat[0].length : 0;
+    const m = n > 0 && Array.isArray(mat[0]) ? mat[0].length : 0;
     return [n, m];
   }
-  function isNaNval(x) { return Number.isNaN(x); }
+
+  function isNaNval(x) {
+    return Number.isNaN(x);
+  }
 
   function flattenColumnMajor(mat) {
     // MATLAB uses column-major linear indexing
@@ -68,9 +71,9 @@ export function inpaint_nans(A2d) {
   function setdiffRows(aRows, bRows) {
     // aRows, bRows are arrays of arrays representing rows [idx,row,col]
     // return rows in aRows that are not present in bRows (compare full row)
-    const key = r => `${r[0]}_${r[1]}_${r[2]}`;
+    const key = (r) => `${r[0]}_${r[1]}_${r[2]}`;
     const bset = new Set(bRows.map(key));
-    return aRows.filter(r => !bset.has(key(r)));
+    return aRows.filter((r) => !bset.has(key(r)));
   }
 
   // identify_neighbors implementation
@@ -81,7 +84,8 @@ export function inpaint_nans(A2d) {
     const talk_count = talks_to.length;
     const nn = []; // will collect candidate neighbors as [r,c]
     for (let t = 0; t < talk_count; t++) {
-      const drow = talks_to[t][0], dcol = talks_to[t][1];
+      const drow = talks_to[t][0],
+        dcol = talks_to[t][1];
       for (let i = 0; i < nan_count; i++) {
         const r = nan_list_rows[i][1] + drow;
         const c = nan_list_rows[i][2] + dcol;
@@ -101,7 +105,11 @@ export function inpaint_nans(A2d) {
       }
     }
     // convert to [linear,row,col]
-    const neighbors_list = uniqueNN.map(p => [sub2ind(n, m, p[0], p[1]), p[0], p[1]]);
+    const neighbors_list = uniqueNN.map((p) => [
+      sub2ind(n, m, p[0], p[1]),
+      p[0],
+      p[1],
+    ]);
     // remove any that are also NaNs
     const result = setdiffRows(neighbors_list, nan_list_rows);
     return result;
@@ -195,7 +203,7 @@ export function inpaint_nans(A2d) {
   const Aflat = flattenColumnMajor(A2d); // 0-based array, but we'll treat indices 1-based where needed
 
   // build k=isnan(A(:))
-  const kmask = Aflat.map(v => isNaNval(v));
+  const kmask = Aflat.map((v) => isNaNval(v));
   const nan_list_indices = []; // 1-based indices of NaNs
   const known_list_indices = [];
   for (let i = 0; i < nm; i++) {
@@ -222,7 +230,7 @@ export function inpaint_nans(A2d) {
       wl.push(idx + 1);
     }
     // keep only 1 < idx < nm (MATLAB code removed <=1 and >=nm)
-    wl = wl.filter(x => x > 1 && x < nm);
+    wl = wl.filter((x) => x > 1 && x < nm);
     wl.push(...nan_list_indices); // ensure nan indices included
     wl = uniqueSorted(wl);
 
@@ -269,13 +277,17 @@ export function inpaint_nans(A2d) {
     const krows = [];
     for (let i = 0; i < nw; i++) {
       let any = false;
-      for (let j = 0; j < N; j++) if (Math.abs(A_mat[i][j]) > 0) { any = true; break; }
+      for (let j = 0; j < N; j++)
+        if (Math.abs(A_mat[i][j]) > 0) {
+          any = true;
+          break;
+        }
       if (any) krows.push(i);
     }
 
     // form reduced M and rhs_k
-    const M = krows.map(i => A_mat[i]);
-    const rhs_k = krows.map(i => rhs[i]);
+    const M = krows.map((i) => A_mat[i]);
+    const rhs_k = krows.map((i) => rhs[i]);
 
     // solve M x = rhs_k in least squares sense
     const x = leastSquaresSolve(M, rhs_k);
@@ -291,7 +303,12 @@ export function inpaint_nans(A2d) {
 
   // --- 2D case ---
   // talks_to = [-1 0;0 -1;1 0;0 1];
-  const talks_to = [[-1, 0], [0, -1], [1, 0], [0, 1]];
+  const talks_to = [
+    [-1, 0],
+    [0, -1],
+    [1, 0],
+    [0, 1],
+  ];
   const neighbors_list = identify_neighbors(n, m, nan_list_rows, talks_to);
 
   // all_list = [nan_list; neighbors_list]
@@ -321,7 +338,9 @@ export function inpaint_nans(A2d) {
   // add entries at linear-n, linear, linear+n with [1 -2 1]
   for (let idx = 0; idx < allLen; idx++) {
     const rec = all_list_rows[idx];
-    const linear = rec[0], row = rec[1], col = rec[2];
+    const linear = rec[0],
+      row = rec[1],
+      col = rec[2];
     if (col > 1 && col < m) {
       const map = fda_rows[idx].map;
       const a = linear - n;
@@ -370,14 +389,17 @@ export function inpaint_nans(A2d) {
   for (let i = 0; i < allLen; i++) {
     let any = false;
     for (let j = 0; j < Nunknown; j++) {
-      if (Math.abs(A_mat[i][j]) > 0) { any = true; break; }
+      if (Math.abs(A_mat[i][j]) > 0) {
+        any = true;
+        break;
+      }
     }
     if (any) krows.push(i);
   }
 
   // Reduced M and rhs_k
-  const M = krows.map(i => A_mat[i]);
-  const rhs_k = krows.map(i => rhs[i]);
+  const M = krows.map((i) => A_mat[i]);
+  const rhs_k = krows.map((i) => rhs[i]);
 
   // Solve least squares M x = rhs_k
   const x = leastSquaresSolve(M, rhs_k);

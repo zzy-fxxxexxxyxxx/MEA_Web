@@ -56,8 +56,8 @@ body {
   display: flex; /* 横向排列 */
   align-items: center; /* 垂直居中 */
   margin-top: 20px; /* 与上方内容间距 */
-  margin-right:5px; /* 与右边内容间距 */
-  margin-left:5px; /* 与左边内容间距 */
+  margin-right: 5px; /* 与右边内容间距 */
+  margin-left: 5px; /* 与左边内容间距 */
   gap: 6px; /* 输入框和按钮之间间距 */
 }
 
@@ -80,9 +80,9 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px; /* 圆角 */
   background-color: #f3f0f0;
-  display: flex;           /* 启用 Flex */
+  display: flex; /* 启用 Flex */
   justify-content: center; /* 水平居中 */
-  align-items: center;     /* 垂直居中 */
+  align-items: center; /* 垂直居中 */
   cursor: pointer;
 }
 

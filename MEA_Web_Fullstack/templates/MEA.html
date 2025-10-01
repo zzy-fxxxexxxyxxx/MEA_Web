@@ -100,16 +100,48 @@
       </div>
 
       <div id="Tab2" class="tabcontent">
-        <div class="spinner-group">
+        <button id="discharge_detection" style="margin-top: 20px">
+          Discharge Detection
+        </button>
+        <div id="discharge_detection_result"></div>
+
+        <div class="spinner-group" title="不可手动修改">
+          <label for="detection_result">放电次数:</label>
+          <input
+            type="text"
+            id="detection_result"
+            class="number-spinner"
+            value="未检测"
+            disabled
+          />
+        </div>
+
+        <div
+          class="spinner-group"
+          id="epoch-group"
+          title="执行Discharge Detection后方可填入"
+        >
           <label for="epoch">Epoch:</label>
           <input
             type="number"
             id="epoch"
             class="number-spinner"
-            value="0"
+            value="1"
             step="1"
-            min="-1000"
+            min="1"
             max="1000"
+            disabled
+          />
+        </div>
+
+        <div class="spinner-group" title="不可手动修改">
+          <label for="time">Time:</label>
+          <input
+            type="text"
+            id="time"
+            class="number-spinner"
+            value="0"
+            disabled
           />
         </div>
 
@@ -149,7 +181,7 @@
             type="number"
             id="time_interval3"
             class="number-spinner"
-            value="0.1"
+            value="1"
             step="1"
             min="-1000"
             max="1000"

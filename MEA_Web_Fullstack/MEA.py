@@ -8,13 +8,7 @@ import neurokit2 as nk
 app = Flask(__name__)
 
 
-# # 启动 MATLAB 引擎
-# print("正在启动 MATLAB 引擎...")
-# eng = matlab.engine.start_matlab()
-# eng.addpath(
-#     r"D:/lesson/lyx_gc/web_make/matlab_code", nargout=0
-# )  # nargout表示返回值个数
-# print("MATLAB 引擎启动完成。")
+
 
 
 # 首页路由

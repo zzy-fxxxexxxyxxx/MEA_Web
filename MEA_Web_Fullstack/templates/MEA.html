@@ -29,8 +29,6 @@
 
       <div id="Tab1" class="tabcontent">
         <div class="input-button-group">
-          <input type="text" class="edit-field" />
-
           <button id="submitBtn" class="round-button">
             <img
               src="{{ url_for('static', filename='folder.svg') }}"
@@ -39,18 +37,31 @@
               height="35"
             />
           </button>
+
+          <input type="text" id="filename" class="edit-field" disabled />
+
           <!-- 如果是只用live sever测试前端，请用下面的路径 -->
           <!-- <button id="submitBtn" class=" round-button"><img src="../static/folder.svg" alt="Stickman" width="22" height="35"></button> -->
         </div>
         <div id="output"></div>
 
         <div class="spinner-group">
-          <label for="voltage1">Voltage:</label>
+          <label for="total_time">Total Time:</label>
+          <input
+            type="text"
+            id="total_time"
+            class="number-spinner"
+            disabled
+          />
+        </div>
+
+        <div class="spinner-group">
+          <label for="voltage1">Voltage(μV):</label>
           <input
             type="number"
             id="voltage1"
             class="number-spinner"
-            value="0.0001"
+            value="70"
             step="1"
             min="-1000"
             max="1000"
@@ -126,7 +137,6 @@
             type="number"
             id="epoch"
             class="number-spinner"
-            value="1"
             step="1"
             min="1"
             max="1000"
@@ -137,15 +147,16 @@
         <div class="spinner-group" title="不可手动修改">
           <label for="time">Time:</label>
           <input
-            type="text"
+            type="number"
             id="time"
             class="number-spinner"
-            value="0"
             disabled
           />
         </div>
+    
 
         <button id="plot2" style="margin-top: 20px">Plot</button>
+        <button id="arrow" style="margin-top: 20px">Arrow</button>
       </div>
 
       <div id="Tab3" class="tabcontent">
@@ -211,7 +222,16 @@
       </div>
 
       <div class="panel" id="panel2">
-        <canvas id="panel2Canvas"></canvas>
+        <!-- <canvas id="panel2Canvas"></canvas> -->
+
+        <svg id="panel2SVG" style="width: 90%; height: 90%">
+          <!-- 最底层：热力图 -->
+          <g id="heatmapLayer"></g>
+          <!-- 中间层：边框 + 电极 -->
+          <g id="layoutLayer"></g>
+          <!-- 最上层：箭头 -->
+          <g id="arrowsLayer"></g>
+        </svg>
       </div>
 
       <div class="panel" id="panel3">

@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>MEA Web</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>MEA Web 2.0</title>
     <!-- 引入外部 CSS -->
     <link
       rel="icon"
@@ -16,231 +19,541 @@
       href="../static/favicon.ico"
     />
     <link rel="stylesheet" href="../static/MEA.css"> -->
+
+    <!-- Tailwind CSS (开发阶段用 CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Chart.js (保持原有依赖) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- Tailwind 配置 -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#165DFF",
+              secondary: "#36CFC9",
+              accent: "#722ED1",
+              neutral: "#1F2937",
+              "neutral-light": "#F5F7FA",
+              success: "#52C41A",
+              warning: "#FAAD14",
+              danger: "#FF4D4F",
+            },
+            fontFamily: {
+              inter: ["Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+        .scrollbar-hide {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .transition-all-300 {
+          transition: all 300ms ease-in-out;
+        }
+      }
+    </style>
   </head>
 
-  <body>
-    <!-- 左侧 -->
-    <div class="left-panel">
-      <div class="tab-buttons">
-        <button class="tablinks" data-tab="Tab1">Raw Data Explorer</button>
-        <button class="tablinks" data-tab="Tab2">Heated Map</button>
-        <button class="tablinks" data-tab="Tab3">Filtered Signal</button>
-      </div>
-
-      <div id="Tab1" class="tabcontent">
-        <div class="input-button-group">
-          <button id="submitBtn" class="round-button">
-            <img
-              src="{{ url_for('static', filename='folder.svg') }}"
-              alt="Stickman"
-              width="22"
-              height="35"
-            />
+  <body
+    class="flex flex-col h-screen font-inter bg-gray-50 text-neutral overflow-x-hidden"
+  >
+    <header class="bg-white border-b border-gray-200 shadow-sm z-30">
+      <div
+        class="container mx-auto px-4 py-3 flex items-center justify-between"
+      >
+        <div class="flex items-center space-x-4">
+          <button
+            id="sidebar-toggle"
+            class="lg:hidden text-neutral p-2 rounded-md hover:bg-gray-100 transition-all-300"
+          >
+            <i class="fa fa-bars text-xl"></i>
           </button>
-
-          <input type="text" id="filename" class="edit-field" disabled />
-
-          <!-- 如果是只用live sever测试前端，请用下面的路径 -->
-          <!-- <button id="submitBtn" class=" round-button"><img src="../static/folder.svg" alt="Stickman" width="22" height="35"></button> -->
-        </div>
-        <div id="output"></div>
-
-        <div class="spinner-group">
-          <label for="total_time">Total Time:</label>
-          <input
-            type="text"
-            id="total_time"
-            class="number-spinner"
-            disabled
-          />
+          <div class="flex items-center">
+            <i class="fa fa-line-chart text-primary text-2xl mr-2"></i>
+            <h1 class="text-xl font-semibold text-neutral hidden sm:block">
+              MEA Data Analyze
+            </h1>
+          </div>
         </div>
 
-        <div class="spinner-group">
-          <label for="voltage1">Voltage(μV):</label>
-          <input
-            type="number"
-            id="voltage1"
-            class="number-spinner"
-            value="70"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
+        <div class="flex items-center space-x-6">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              class="pl-9 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all-300 text-sm w-48 lg:w-64"
+            />
+            <i
+              class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            ></i>
+          </div>
 
-        <div class="spinner-group">
-          <label for="start_time1">Start Time:</label>
-          <input
-            type="number"
-            id="start_time1"
-            class="number-spinner"
-            value="1"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
+          <div class="flex items-center space-x-4">
+            <button
+              class="text-gray-500 hover:text-primary transition-all-300 relative"
+            >
+              <i class="fa fa-bell text-xl"></i>
+              <span
+                class="absolute -top-1 -right-1 bg-danger text-white text-xs rounded-full h-4 w-4 flex items-center justify-center"
+                >3</span
+              >
+            </button>
+            <div class="flex items-center cursor-pointer group">
+              <img
+                src="{{ url_for('static', filename='user.jpg') }}"
+                alt="User profile"
+                class="h-8 w-8 rounded-full object-cover border-2 border-transparent group-hover:border-primary transition-all-300"
+              />
 
-        <div class="spinner-group">
-          <label for="time_interval1">Time Interval:</label>
-          <input
-            type="number"
-            id="time_interval1"
-            class="number-spinner"
-            value="0.1"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
+              <span class="ml-2 text-sm font-medium hidden md:block">YXLi</span>
+              <i
+                class="fa fa-chevron-down ml-1 text-xs text-gray-500 hidden md:block"
+              ></i>
+            </div>
+          </div>
         </div>
-
-        <div class="spinner-group">
-          <label for="tab1">Tab:</label>
-          <input
-            type="number"
-            id="tab1"
-            class="number-spinner"
-            value="44"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
-
-        <button id="plot1" style="margin-top: 20px">Plot</button>
       </div>
+    </header>
 
-      <div id="Tab2" class="tabcontent">
-        <button id="discharge_detection" style="margin-top: 20px">
-          Discharge Detection
-        </button>
-        <div id="discharge_detection_result"></div>
+    <!-- 左侧 -->
+    <div class="flex flex-1 overflow-hidden">
+      <aside
+        id="sidebar"
+        class="bg-white w-64 border-r border-gray-200 flex-shrink-0 hidden lg:block transition-all-300 overflow-y-auto scrollbar-hide"
+      >
+        <nav class="left-panel">
+          <!-- 顶部导航标签 -->
+          <div class="tab-buttons">
+            <p
+              class="text-xs uppercase text-gray-500 font-semibold tracking-wider mb-2 pl-3"
+            >
+              Main Interface
+            </p>
+            <a href="#" class="tablinks" data-tab="Tab1">
+              <i class="fa fa-database w-5 h-5 mr-3"></i> Raw Data Explorer
+            </a>
+            <a href="#" class="tablinks" data-tab="Tab2">
+              <i class="fa fa-fire w-5 h-5 mr-3"></i> Heated Map
+            </a>
+            <a href="#" class="tablinks" data-tab="Tab3">
+              <i class="fa fa-filter w-5 h-5 mr-3"></i> Filtered Signal
+            </a>
+          </div>
 
-        <div class="spinner-group" title="不可手动修改">
-          <label for="detection_result">放电次数:</label>
-          <input
-            type="text"
-            id="detection_result"
-            class="number-spinner"
-            value="未检测"
-            disabled
-          />
+          <hr class="my-4 border-gray-200" />
+
+          <!-- 内容区 -->
+          <div class="analysis-content">
+            <!-- Tab 1 -->
+            <div id="Tab1" class="tabcontent space-y-5">
+              <p class="text-sm text-center font-semibold tracking-wider mb-2">
+                Analysis Time Window
+              </p>
+
+              <!-- 文件选择 -->
+              <div class="input-button-group">
+                <input type="text" id="filename" class="edit-field" disabled />
+                <button id="submitBtn" class="round-button">
+                  <img
+                    src="{{ url_for('static', filename='folder.svg') }}"
+                    alt="Stickman"
+                    width="22"
+                    height="35"
+                  />
+                </button>
+              </div>
+              <div id="output"></div>
+
+              <!-- 总时长 -->
+              <div class="input-button-group">
+                <label class="form-label">Total Time</label>
+                <div class="input-container">
+                  <input
+                    type="text"
+                    id="total_time"
+                    class="form-input"
+                    disabled
+                    title="不可手动修改"
+                  />
+                  <span class="input-unit">s</span>
+                </div>
+              </div>
+
+              <!-- 电压 -->
+              <div class="input-button-group">
+                <label class="form-label">Voltage</label>
+                <div class="input-container">
+                  <span class="input-prefix">±</span>
+                  <input
+                    type="number"
+                    id="voltage1"
+                    class="Voltage-input"
+                    value="70"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                  <span class="input-unit">μV</span>
+                </div>
+              </div>
+
+              <!-- 起始时间 -->
+              <div class="input-button-group">
+                <label class="form-label">Start Time</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="start_time1"
+                    class="form-input"
+                    value="1"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                  <span class="input-unit">s</span>
+                </div>
+              </div>
+
+              <!-- 时间间隔 -->
+              <div class="input-button-group">
+                <label class="form-label">Time Interval</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="time_interval1"
+                    class="form-input"
+                    value="0.1"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                  <span class="input-unit">s</span>
+                </div>
+              </div>
+
+              <!-- Tab 值 -->
+              <div class="input-button-group">
+                <label class="form-label">Tab</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="tab1"
+                    class="form-input"
+                    value="44"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                </div>
+              </div>
+
+              <!-- 操作按钮 -->
+              <div class="form-button-group mt-8">
+                <button
+                  id="plot1"
+                  class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-all-300 text-sm font-medium w-full justify-center"
+                >
+                  <i class="fa fa-play mr-2"></i> Plot
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab 2 -->
+            <div id="Tab2" class="tabcontent space-y-5">
+              <p class="text-sm text-center font-semibold tracking-wider mb-2">
+                Discharge Detection
+              </p>
+
+              <!-- 检测按钮 -->
+              <button
+                id="discharge_detection"
+                class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-all-300 text-sm font-medium w-full justify-center"
+              >
+                <i class="fa fa-bolt mr-2"></i> Discharge Detection
+              </button>
+
+              <div id="discharge_detection_result"></div>
+
+              <!-- 放电次数 -->
+              <div class="input-button-group" title="不可手动修改">
+                <label class="form-label">放电次数</label>
+                <div class="input-container">
+                  <input
+                    type="text"
+                    id="detection_result"
+                    class="form-input"
+                    value="未检测"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <!-- Epoch -->
+              <div
+                class="input-button-group"
+                title="执行Discharge Detection后方可填入"
+              >
+                <label class="form-label">Epoch</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="epoch"
+                    class="form-input"
+                    step="1"
+                    min="1"
+                    max="1000"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <!-- Time -->
+              <div class="input-button-group" title="不可手动修改">
+                <label class="form-label">Time</label>
+                <div class="input-container">
+                  <input type="number" id="time" class="form-input" disabled />
+                  <span class="input-unit">s</span>
+                </div>
+              </div>
+
+              <!-- 功能按钮 -->
+              <div class="form-button-group mt-4">
+                <button
+                  id="plot2"
+                  class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-all-300 text-sm font-medium w-full justify-center"
+                >
+                  <i class="fa fa-play mr-2"></i> Plot
+                </button>
+                <button
+                  id="arrow"
+                  class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all-300 text-sm font-medium w-full justify-center mt-2"
+                >
+                  <i class="fa fa-long-arrow-up mr-2"></i> Arrow
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab 3 -->
+            <div id="Tab3" class="tabcontent space-y-5">
+              <p class="text-sm text-center font-semibold tracking-wider mb-2">
+                Filtered Signal
+              </p>
+
+              <div class="input-button-group">
+                <label class="form-label">Voltage</label>
+                <div class="input-container">
+                  <span class="input-prefix">±</span>
+                  <input
+                    type="number"
+                    id="voltage3"
+                    class="Voltage-input"
+                    value="70"
+                    step="1"
+                    min="1"
+                    max="1000"
+                  />
+                  <span class="input-unit">μV</span>
+                </div>
+              </div>
+
+              <div class="input-button-group">
+                <label class="form-label">Start Time</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="start_time3"
+                    class="form-input"
+                    value="1"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                  <span class="input-unit">s</span>
+                </div>
+              </div>
+
+              <div class="input-button-group">
+                <label class="form-label">Time Interval</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="time_interval3"
+                    class="form-input"
+                    value="1"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                  <span class="input-unit">s</span>
+                </div>
+              </div>
+
+              <div class="input-button-group">
+                <label class="form-label">Tab</label>
+                <div class="input-container">
+                  <input
+                    type="number"
+                    id="tab3"
+                    class="form-input"
+                    value="44"
+                    step="1"
+                    min="-1000"
+                    max="1000"
+                  />
+                </div>
+              </div>
+
+              <div class="form-button-group mt-4">
+                <button
+                  id="plot3"
+                  class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-all-300 text-sm font-medium w-full justify-center"
+                >
+                  <i class="fa fa-play mr-2"></i> Plot
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- 🌟 右侧主内容区域（美化后 + JS逻辑保留） -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-4 lg:p-6">
+        <!-- 四宫格布局 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- 🟦 面板1：Original Peak -->
+          <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold">Original Peak</h2>
+              <div class="flex space-x-2">
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              class="overflow-auto bg-gray-50 rounded-lg p-4 flex items-center justify-center h-[350px]"
+            >
+              <!-- ✅ 保留原逻辑的 canvas -->
+              <canvas id="panel1Canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- 🟩 面板2：Heated Map -->
+          <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold">Heated Map</h2>
+              <div class="flex space-x-2">
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+            <!-- <div
+              class="flex items-center justify-center h-[350px] bg-gray-50 rounded-lg p-4 relative"
+            > -->
+            <div
+              class="overflow-auto bg-gray-50 rounded-lg p-4 flex items-center justify-center h-[350px]"
+            >
+              <!-- ✅ 保留原逻辑的 SVG -->
+              <svg id="panel2SVG" style="width: 90%; height: 90%">
+                <!-- 最底层：热力图 -->
+                <g id="heatmapLayer"></g>
+                <!-- 中间层：边框 + 电极 -->
+                <g id="layoutLayer"></g>
+                <!-- 最上层：箭头 -->
+                <g id="arrowsLayer"></g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 🟥 面板3：Original Peak Enlargement -->
+          <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold">Original Peak Enlargement</h2>
+              <div class="flex space-x-2">
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-center h-[300px] bg-gray-50 rounded-lg p-4 relative"
+            >
+              <!-- ✅ 保留原逻辑的 canvas -->
+              <canvas id="canvas1" class="plot-canvas"></canvas>
+            </div>
+          </div>
+
+          <!-- 🟨 面板4：Filtered Signal -->
+          <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold">Filtered Signal</h2>
+              <div class="flex space-x-2">
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-expand"></i>
+                </button>
+                <button
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                >
+                  <i class="fa fa-refresh"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-center h-[300px] bg-gray-50 rounded-lg p-4 relative"
+            >
+              <!-- ✅ 保留原逻辑的 canvas -->
+              <canvas id="canvas2"></canvas>
+            </div>
+          </div>
         </div>
-
-        <div
-          class="spinner-group"
-          id="epoch-group"
-          title="执行Discharge Detection后方可填入"
-        >
-          <label for="epoch">Epoch:</label>
-          <input
-            type="number"
-            id="epoch"
-            class="number-spinner"
-            step="1"
-            min="1"
-            max="1000"
-            disabled
-          />
-        </div>
-
-        <div class="spinner-group" title="不可手动修改">
-          <label for="time">Time:</label>
-          <input
-            type="number"
-            id="time"
-            class="number-spinner"
-            disabled
-          />
-        </div>
-    
-
-        <button id="plot2" style="margin-top: 20px">Plot</button>
-        <button id="arrow" style="margin-top: 20px">Arrow</button>
-      </div>
-
-      <div id="Tab3" class="tabcontent">
-        <div class="spinner-group">
-          <label for="voltage3">Voltage:</label>
-          <input
-            type="number"
-            id="voltage3"
-            class="number-spinner"
-            value="0.0001"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
-
-        <div class="spinner-group">
-          <label for="start_time3">Start Time:</label>
-          <input
-            type="number"
-            id="start_time3"
-            class="number-spinner"
-            value="1"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
-
-        <div class="spinner-group">
-          <label for="time_interval3">Time Interval:</label>
-          <input
-            type="number"
-            id="time_interval3"
-            class="number-spinner"
-            value="1"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
-
-        <div class="spinner-group">
-          <label for="tab3">Tab:</label>
-          <input
-            type="number"
-            id="tab3"
-            class="number-spinner"
-            value="44"
-            step="1"
-            min="-1000"
-            max="1000"
-          />
-        </div>
-
-        <button id="plot3" style="margin-top: 20px">Plot</button>
-      </div>
-    </div>
-
-    <div class="right-panel">
-      <div class="panel" id="panel1">
-        <canvas id="panel1Canvas"></canvas>
-      </div>
-
-      <div class="panel" id="panel2">
-        <!-- <canvas id="panel2Canvas"></canvas> -->
-
-        <svg id="panel2SVG" style="width: 90%; height: 90%">
-          <!-- 最底层：热力图 -->
-          <g id="heatmapLayer"></g>
-          <!-- 中间层：边框 + 电极 -->
-          <g id="layoutLayer"></g>
-          <!-- 最上层：箭头 -->
-          <g id="arrowsLayer"></g>
-        </svg>
-      </div>
-
-      <div class="panel" id="panel3">
-        <canvas id="canvas1" class="plot-canvas"></canvas>
-      </div>
-
-      <div class="panel" id="panel4">
-        <canvas id="canvas2" class="plot-canvas"></canvas>
-      </div>
+      </main>
     </div>
 
     <script
@@ -251,3 +564,225 @@
     <!-- <script type="module" src="../static/main.js"></script> -->
   </body>
 </html>
+
+<!-- 废代码区 -->
+<!-- 原有左侧布局 -->
+<!-- <div class="left-panel">
+        <div class="tab-buttons">
+          <button class="tablinks" data-tab="Tab1">Raw Data Explorer</button>
+          <button class="tablinks" data-tab="Tab2">Heated Map</button>
+          <button class="tablinks" data-tab="Tab3">Filtered Signal</button>
+        </div>
+
+        <div id="Tab1" class="tabcontent">
+          <div class="input-button-group">
+            <button id="submitBtn" class="round-button">
+              <img
+                src="{{ url_for('static', filename='folder.svg') }}"
+                alt="Stickman"
+                width="22"
+                height="35"
+              />
+            </button>
+
+            <input type="text" id="filename" class="edit-field" disabled />
+
+          </div>
+          <div id="output"></div>
+
+          <div class="spinner-group">
+            <label for="total_time">Total Time:</label>
+            <input
+              type="text"
+              id="total_time"
+              class="number-spinner"
+              disabled
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="voltage1">Voltage(μV):</label>
+            <input
+              type="number"
+              id="voltage1"
+              class="number-spinner"
+              value="70"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="start_time1">Start Time:</label>
+            <input
+              type="number"
+              id="start_time1"
+              class="number-spinner"
+              value="1"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="time_interval1">Time Interval:</label>
+            <input
+              type="number"
+              id="time_interval1"
+              class="number-spinner"
+              value="0.1"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="tab1">Tab:</label>
+            <input
+              type="number"
+              id="tab1"
+              class="number-spinner"
+              value="44"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <button id="plot1" style="margin-top: 20px">Plot</button>
+        </div>
+
+        <div id="Tab2" class="tabcontent">
+          <button id="discharge_detection" style="margin-top: 20px">
+            Discharge Detection
+          </button>
+          <div id="discharge_detection_result"></div>
+
+          <div class="spinner-group" title="不可手动修改">
+            <label for="detection_result">放电次数:</label>
+            <input
+              type="text"
+              id="detection_result"
+              class="number-spinner"
+              value="未检测"
+              disabled
+            />
+          </div>
+
+          <div
+            class="spinner-group"
+            id="epoch-group"
+            title="执行Discharge Detection后方可填入"
+          >
+            <label for="epoch">Epoch:</label>
+            <input
+              type="number"
+              id="epoch"
+              class="number-spinner"
+              step="1"
+              min="1"
+              max="1000"
+              disabled
+            />
+          </div>
+
+          <div class="spinner-group" title="不可手动修改">
+            <label for="time">Time:</label>
+            <input type="number" id="time" class="number-spinner" disabled />
+          </div>
+
+          <button id="plot2" style="margin-top: 20px">Plot</button>
+          <button id="arrow" style="margin-top: 20px">Arrow</button>
+        </div>
+
+        <div id="Tab3" class="tabcontent">
+          <div class="spinner-group">
+            <label for="voltage3">Voltage:</label>
+            <input
+              type="number"
+              id="voltage3"
+              class="number-spinner"
+              value="0.0001"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="start_time3">Start Time:</label>
+            <input
+              type="number"
+              id="start_time3"
+              class="number-spinner"
+              value="1"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="time_interval3">Time Interval:</label>
+            <input
+              type="number"
+              id="time_interval3"
+              class="number-spinner"
+              value="1"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <div class="spinner-group">
+            <label for="tab3">Tab:</label>
+            <input
+              type="number"
+              id="tab3"
+              class="number-spinner"
+              value="44"
+              step="1"
+              min="-1000"
+              max="1000"
+            />
+          </div>
+
+          <button id="plot3" style="margin-top: 20px">Plot</button>
+        </div>
+      </div> -->
+
+<!-- 废代码 -->
+<!-- <canvas id="panel2Canvas"></canvas> -->
+
+<!-- 废代码 -->
+<!-- 右侧面板 -->
+      <!-- <div class="right-panel">
+        <div class="panel" id="panel1">
+          <canvas id="panel1Canvas"></canvas>
+        </div>
+
+        <div class="panel" id="panel2">
+          
+
+          <svg id="panel2SVG" style="width: 90%; height: 90%">
+            
+            <g id="heatmapLayer"></g>
+            
+            <g id="layoutLayer"></g>
+            
+            <g id="arrowsLayer"></g>
+          </svg>
+        </div>
+
+        <div class="panel" id="panel3">
+          <canvas id="canvas1" class="plot-canvas"></canvas>
+        </div>
+
+        <div class="panel" id="panel4">
+          <canvas id="canvas2" class="plot-canvas"></canvas>
+        </div>
+      </div> -->

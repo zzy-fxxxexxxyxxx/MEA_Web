@@ -1,3 +1,176 @@
+.left-panel{
+    padding: 1rem; /* 16px */
+}
+.tab-buttons > * + * {
+    margin-top: 0.25rem; /* 4px */
+}
+.tab-buttons a{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem; /* py-2 px-3 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  border-radius: 0.375rem; /* rounded-md */
+  color: #374151; /* text-gray-700 */
+  transition: all 300ms; /* transition-all-300 */
+}
+.tab-buttons a.active { 
+  background-color: rgba(59, 130, 246, 0.1); /* bg-primary/10 - 假设primary是blue-500 */
+  color: rgb(59, 130, 246); /* text-primary - 假设primary是blue-500 */
+}
+.tab-buttons a:hover:not(.active) {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+.analysis-content > div {
+  display: none; /* 默认隐藏所有内容 */
+}
+.analysis-content > div.tabcontent {
+  display: block; /* 激活的内容显示 */
+}
+/* 输入框和按钮容器：横向排列 */
+.input-button-group {
+    display: flex;
+    /* 横向排列 */
+    align-items: center;
+    /* 垂直居中 */
+    margin-right: 5px;
+    /* 与右边内容间距 */
+    margin-left: 5px;
+    /* 与左边内容间距 */
+    gap: 6px;
+    /* 输入框和按钮之间间距 */
+}
+
+/* 输入框样式（直角） */
+.edit-field {
+    width: 90%;
+    height: 28px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    /* 直角 */
+    flex: 1;
+    /* 占满剩余空间 */
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+/* 按钮样式（圆角） */
+.round-button {
+    width: 40px;
+    height: 28px;
+    padding: 2px 3px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* 圆角 */
+    background-color: #f3f0f0;
+    display: flex;
+    /* 启用 Flex */
+    justify-content: center;
+    /* 水平居中 */
+    align-items: center;
+    /* 垂直居中 */
+    cursor: pointer;
+}
+
+.round-button:hover {
+    background-color: #ccc;
+    /* 悬停效果 */
+}
+
+.form-label {
+    display: inline;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+}
+
+.input-container {
+    margin-right: 5px;
+    /* 与右边内容间距 */
+    margin-left: 5px;
+    /* 与左边内容间距 */
+    position: relative;
+    width: 100%;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.Voltage-input {
+    width: 100%;
+    padding: 0.5rem 1.7rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    /* primary color */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.Voltage-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    /* primary color */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+.edit-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+    /* primary color */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.input-prefix {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+
+.input-unit {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    font-size: 0.875rem;
+    pointer-events: none;
+}
+/* 按钮横向排列 */
+.form-button-group {
+    display: flex;
+    /* 横向排列 */
+    align-items: center;
+    /* 垂直居中 */
+    margin-right:5px;
+    /* 与右边内容间距 */
+    margin-left: 8px;
+    /* 与左边内容间距 */
+    gap: 12px;
+    /* 输入框和按钮之间间距 */
+}
+
+
+/*--------------------------------------*/
+
 /* 整体布局：左右两部分 */
 body {
   margin: 0;
@@ -7,24 +180,24 @@ body {
 }
 
 /* 左侧 TabGroup + 内容 */
-.left-panel {
-  width: 20%; /* 左五分之一 */
+/* .left-panel {
+  width: 20%; 
   border-right: 1px solid #ccc;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 10px;
   box-sizing: border-box;
-}
+} */
 
 /* Tab 按钮水平排列 */
-.tab-buttons {
+/* .tab-buttons {
   display: flex;
   justify-content: space-around;
   margin-bottom: 10px;
-}
+} */
 /* 定义三个界面切换按钮 */
-.tab-buttons button {
+/* .tab-buttons button {
   flex: 1;
   padding: 10px;
   border: 1px solid #ccc;
@@ -32,16 +205,16 @@ body {
   cursor: pointer;
   margin-right: 2px;
   font-size: 14px;
-}
+} */
 
-.tab-buttons button:last-child {
+/* .tab-buttons button:last-child {
   margin-right: 0;
-}
+} */
 
-.tab-buttons button.active {
+/* .tab-buttons button.active {
   background-color: #ddd;
   font-weight: bold;
-}
+} */
 
 /* 左侧内容区域 */
 .tabcontent {
@@ -52,39 +225,39 @@ body {
 }
 
 /* 输入框和按钮容器：横向排列 */
-.input-button-group {
-  display: flex; /* 横向排列 */
-  align-items: center; /* 垂直居中 */
-  margin-top: 20px; /* 与上方内容间距 */
-  margin-right: 5px; /* 与右边内容间距 */
-  margin-left: 5px; /* 与左边内容间距 */
-  gap: 6px; /* 输入框和按钮之间间距 */
-}
+/* .input-button-group {
+  display: flex; 
+  align-items: center; 
+  margin-top: 20px; 
+  margin-right: 5px; 
+  margin-left: 5px; 
+  gap: 6px; 
+} */
 
 /* 输入框样式（直角） */
-.edit-field {
+/* .edit-field {
   width: 5px;
   height: 8px;
   padding: 8px 12px;
   border: 1px solid #ccc;
-  border-radius: 0; /* 直角 */
-  flex: 1; /* 占满剩余空间 */
+  border-radius: 0; 
+  flex: 1;
   font-size: 14px;
-}
+} */
 
 /* 按钮样式（圆角） */
-.round-button {
+/* .round-button {
   width: 20px;
   height: 20px;
   padding: 12px 20px;
   border: 1px solid #ccc;
-  border-radius: 4px; /* 圆角 */
+  border-radius: 4px; 
   background-color: #f3f0f0;
-  display: flex; /* 启用 Flex */
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
   cursor: pointer;
-}
+} */
 
 /* 把voltagegroup打包成组，无边框 */
 .spinner-group {
@@ -135,8 +308,8 @@ body {
 }
 
 .right-panel .panel .plot-canvas {
-  width: calc(100% - 40px); /* 宽度 = 父容器宽度 - 左右 margin */
-  height: calc(100% - 40px); /* 高度 = 父容器高度 - 上下 margin */
+  width: calc(100%); /* 宽度 = 父容器宽度 - 左右 margin */
+  height: calc(100%); /* 高度 = 父容器高度 - 上下 margin */
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box; /* 让 border 也计入 width/height */

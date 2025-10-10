@@ -19,6 +19,7 @@ import {
   drawGridOnPanel2,
   HeatCalculate,
   drawSmoothHeatmapTransparentCorners,
+  drawArrow,
 } from "./Panel2_def.js";
 import { plotAllSignals } from "./Panel4_def.js";
 
@@ -116,7 +117,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Raw_data:", processedData.Raw_data[1][0]);
     console.log("layout:", processedData.layout);
 
-    // document.getElementById("output").textContent += "\n数据处理成功 ✅";
+    // ✅ 设置 input 的值为文件名
+    document.getElementById("filename").value = file.name;
+    document.getElementById("total_time").value =
+      processedData.Raw_data[0].length / processedData.fs;
   });
 
   //------------------------------------Panel 1,2初始化--------------------------------------------------------------------
@@ -138,16 +142,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       processedData = await detectPeaks(processedData, 60, 4);
       document.getElementById("detection_result").value =
         processedData.peakArriveTime.length;
-      document.getElementById("time").value =
-        processedData.peakBaseTimes[document.getElementById("epoch").value] - 1;
+
       // 🔹 执行完成后恢复输入框可用并修改 title
-      document.getElementById("epoch-group").title =
+      document.getElementById("epoch").title =
         "请输入不可超过放电次数的正整数";
 
       const epochInput = document.getElementById("epoch");
 
       epochInput.disabled = false;
+      epochInput.value = 1;
       epochInput.max = processedData.peakArriveTime.length;
+      document.getElementById("time").value =
+        processedData.peakBaseTimes[document.getElementById("epoch").value - 1];
 
       epochInput.addEventListener("blur", () => {
         const min = parseInt(epochInput.min, 10);
@@ -173,10 +179,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // ✅ 合法值 -> 可以继续执行后面逻辑
         // console.log("输入合法，可以继续执行逻辑:", value);
         document.getElementById("time").value =
-          processedData.peakBaseTimes[document.getElementById("epoch").value] -
-          1;
+          processedData.peakBaseTimes[
+            document.getElementById("epoch").value - 1
+          ];
       });
     });
+
+  let HeatMapData = null;
 
   document.getElementById("plot2").addEventListener("click", async () => {
     // drawElectrodeHeatmap(processedData);
@@ -184,13 +193,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     const t0Input = document.getElementById("epoch");
     let t0 = Math.round(Number(t0Input?.value) || 0);
 
-    const HeatMapData = await HeatCalculate(
+    HeatMapData = await HeatCalculate(
       processedData.peakArriveTime[t0 - 1], //减去1来对其索引
       processedData.fs,
       processedData.layout
     );
 
     drawSmoothHeatmapTransparentCorners(HeatMapData, "color1");
+  });
+
+  document.getElementById("arrow").addEventListener("click", async () => {
+    if (!HeatMapData) {
+      alert("HeatMapData 还没有生成，请先点击 plot2 按钮！");
+      return;
+    }
+    console.log("用来画箭头的HeatMapData:", HeatMapData);
+    drawArrow(HeatMapData, 2);
   });
 
   document.getElementById("plot3").addEventListener("click", async () => {

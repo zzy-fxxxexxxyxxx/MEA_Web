@@ -185,7 +185,6 @@
                   />
                 </button>
               </div>
-              <div id="output"></div>
 
               <!-- 总时长 -->
               <div class="input-button-group">
@@ -211,8 +210,8 @@
                     type="number"
                     id="voltage1"
                     class="Voltage-input"
-                    value="70"
-                    step="1"
+                    value="100"
+                    step="10"
                     min="-1000"
                     max="1000"
                   />
@@ -262,10 +261,10 @@
                     type="number"
                     id="tab1"
                     class="form-input"
-                    value="44"
+                    value="0"
                     step="1"
-                    min="-1000"
-                    max="1000"
+                    min="0"
+                    max="100"
                   />
                 </div>
               </div>
@@ -347,11 +346,20 @@
                 >
                   <i class="fa fa-play mr-2"></i> Plot
                 </button>
+              </div>
+              <div class="form-button-group mt-4 flex space-x-2">
                 <button
                   id="arrow"
-                  class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all-300 text-sm font-medium w-full justify-center mt-2"
+                  class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all-300 text-sm font-medium"
                 >
                   <i class="fa fa-long-arrow-up mr-2"></i> Arrow
+                </button>
+
+                <button
+                  id="remove2"
+                  class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-all-300 text-sm font-medium"
+                >
+                  <i class="fa fa-trash mr-2"></i> Remove
                 </button>
               </div>
             </div>
@@ -370,9 +378,9 @@
                     type="number"
                     id="voltage3"
                     class="Voltage-input"
-                    value="70"
-                    step="1"
-                    min="1"
+                    value="100"
+                    step="10"
+                    min="0"
                     max="1000"
                   />
                   <span class="input-unit">μV</span>
@@ -446,17 +454,33 @@
           <!-- 🟦 面板1：Original Peak -->
           <div class="bg-white rounded-xl p-4 card-shadow">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold">Original Peak</h2>
+              <h2 class="text-lg font-semibold">1. Original Peak</h2>
               <div class="flex space-x-2">
+                <!-- 💾 保存按钮 -->
                 <button
+                  id="savePanel1"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="保存当前图像"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+
+                <!-- 🔍 放大按钮 -->
+                <button
+                  id="expandPanel1"
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="放大显示"
                 >
                   <i class="fa fa-expand"></i>
                 </button>
+
+                <!-- 🔄 刷新按钮 -->
                 <button
+                  id="refreshPanel1"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="刷新"
                 >
-                  <i class="fa fa-refresh"></i>
+                  <i class="fa fa-trash mr-2"></i>
                 </button>
               </div>
             </div>
@@ -471,17 +495,33 @@
           <!-- 🟩 面板2：Heated Map -->
           <div class="bg-white rounded-xl p-4 card-shadow">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold">Heated Map</h2>
+              <h2 class="text-lg font-semibold">2. Heated Map</h2>
               <div class="flex space-x-2">
+                <!-- 💾 保存按钮 -->
                 <button
+                  id="savePanel2"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="保存当前图像"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+
+                <!-- 🔍 放大按钮 -->
+                <button
+                  id="expandPanel2"
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="放大显示"
                 >
                   <i class="fa fa-expand"></i>
                 </button>
+
+                <!-- 🔄 刷新按钮 -->
                 <button
+                  id="refreshPanel2"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="刷新"
                 >
-                  <i class="fa fa-refresh"></i>
+                  <i class="fa fa-trash mr-2"></i>
                 </button>
               </div>
             </div>
@@ -506,17 +546,36 @@
           <!-- 🟥 面板3：Original Peak Enlargement -->
           <div class="bg-white rounded-xl p-4 card-shadow">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold">Original Peak Enlargement</h2>
+              <h2 class="text-lg font-semibold">
+                3. Original Peak Enlargement
+              </h2>
+
               <div class="flex space-x-2">
+                <!-- 💾 保存按钮 -->
                 <button
+                  id="savePanel3"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="保存当前图像"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+
+                <!-- 🔍 放大按钮 -->
+                <button
+                  id="expandPanel3"
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="放大显示"
                 >
                   <i class="fa fa-expand"></i>
                 </button>
+
+                <!-- 🔄 刷新按钮 -->
                 <button
+                  id="refreshPanel3"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="刷新"
                 >
-                  <i class="fa fa-refresh"></i>
+                  <i class="fa fa-trash mr-2"></i>
                 </button>
               </div>
             </div>
@@ -531,17 +590,33 @@
           <!-- 🟨 面板4：Filtered Signal -->
           <div class="bg-white rounded-xl p-4 card-shadow">
             <div class="flex items-center justify-between mb-2">
-              <h2 class="text-lg font-semibold">Filtered Signal</h2>
+              <h2 class="text-lg font-semibold">4. Filtered Signal</h2>
               <div class="flex space-x-2">
+                <!-- 💾 保存按钮 -->
                 <button
+                  id="savePanel4"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="保存当前图像"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+
+                <!-- 🔍 放大按钮 -->
+                <button
+                  id="expandPanel4"
+                  class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="放大显示"
                 >
                   <i class="fa fa-expand"></i>
                 </button>
+
+                <!-- 🔄 刷新按钮 -->
                 <button
+                  id="refreshPanel4"
                   class="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 rounded transition-all-300"
+                  title="刷新"
                 >
-                  <i class="fa fa-refresh"></i>
+                  <i class="fa fa-trash mr-2"></i>
                 </button>
               </div>
             </div>
@@ -556,6 +631,19 @@
       </main>
     </div>
 
+    <div
+      id="toast1"
+      class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-white px-6 py-3 rounded shadow opacity-0 transition-opacity duration-500 z-50"
+    >
+      读取文件成功
+    </div>
+    <div
+      id="toast2"
+      class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary text-white px-6 py-3 rounded shadow opacity-0 transition-opacity duration-500 z-50"
+    >
+      放电检测成功
+    </div>
+
     <script
       type="module"
       src="{{ url_for('static', filename='main.js') }}"
@@ -564,225 +652,3 @@
     <!-- <script type="module" src="../static/main.js"></script> -->
   </body>
 </html>
-
-<!-- 废代码区 -->
-<!-- 原有左侧布局 -->
-<!-- <div class="left-panel">
-        <div class="tab-buttons">
-          <button class="tablinks" data-tab="Tab1">Raw Data Explorer</button>
-          <button class="tablinks" data-tab="Tab2">Heated Map</button>
-          <button class="tablinks" data-tab="Tab3">Filtered Signal</button>
-        </div>
-
-        <div id="Tab1" class="tabcontent">
-          <div class="input-button-group">
-            <button id="submitBtn" class="round-button">
-              <img
-                src="{{ url_for('static', filename='folder.svg') }}"
-                alt="Stickman"
-                width="22"
-                height="35"
-              />
-            </button>
-
-            <input type="text" id="filename" class="edit-field" disabled />
-
-          </div>
-          <div id="output"></div>
-
-          <div class="spinner-group">
-            <label for="total_time">Total Time:</label>
-            <input
-              type="text"
-              id="total_time"
-              class="number-spinner"
-              disabled
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="voltage1">Voltage(μV):</label>
-            <input
-              type="number"
-              id="voltage1"
-              class="number-spinner"
-              value="70"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="start_time1">Start Time:</label>
-            <input
-              type="number"
-              id="start_time1"
-              class="number-spinner"
-              value="1"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="time_interval1">Time Interval:</label>
-            <input
-              type="number"
-              id="time_interval1"
-              class="number-spinner"
-              value="0.1"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="tab1">Tab:</label>
-            <input
-              type="number"
-              id="tab1"
-              class="number-spinner"
-              value="44"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <button id="plot1" style="margin-top: 20px">Plot</button>
-        </div>
-
-        <div id="Tab2" class="tabcontent">
-          <button id="discharge_detection" style="margin-top: 20px">
-            Discharge Detection
-          </button>
-          <div id="discharge_detection_result"></div>
-
-          <div class="spinner-group" title="不可手动修改">
-            <label for="detection_result">放电次数:</label>
-            <input
-              type="text"
-              id="detection_result"
-              class="number-spinner"
-              value="未检测"
-              disabled
-            />
-          </div>
-
-          <div
-            class="spinner-group"
-            id="epoch-group"
-            title="执行Discharge Detection后方可填入"
-          >
-            <label for="epoch">Epoch:</label>
-            <input
-              type="number"
-              id="epoch"
-              class="number-spinner"
-              step="1"
-              min="1"
-              max="1000"
-              disabled
-            />
-          </div>
-
-          <div class="spinner-group" title="不可手动修改">
-            <label for="time">Time:</label>
-            <input type="number" id="time" class="number-spinner" disabled />
-          </div>
-
-          <button id="plot2" style="margin-top: 20px">Plot</button>
-          <button id="arrow" style="margin-top: 20px">Arrow</button>
-        </div>
-
-        <div id="Tab3" class="tabcontent">
-          <div class="spinner-group">
-            <label for="voltage3">Voltage:</label>
-            <input
-              type="number"
-              id="voltage3"
-              class="number-spinner"
-              value="0.0001"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="start_time3">Start Time:</label>
-            <input
-              type="number"
-              id="start_time3"
-              class="number-spinner"
-              value="1"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="time_interval3">Time Interval:</label>
-            <input
-              type="number"
-              id="time_interval3"
-              class="number-spinner"
-              value="1"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <div class="spinner-group">
-            <label for="tab3">Tab:</label>
-            <input
-              type="number"
-              id="tab3"
-              class="number-spinner"
-              value="44"
-              step="1"
-              min="-1000"
-              max="1000"
-            />
-          </div>
-
-          <button id="plot3" style="margin-top: 20px">Plot</button>
-        </div>
-      </div> -->
-
-<!-- 废代码 -->
-<!-- <canvas id="panel2Canvas"></canvas> -->
-
-<!-- 废代码 -->
-<!-- 右侧面板 -->
-      <!-- <div class="right-panel">
-        <div class="panel" id="panel1">
-          <canvas id="panel1Canvas"></canvas>
-        </div>
-
-        <div class="panel" id="panel2">
-          
-
-          <svg id="panel2SVG" style="width: 90%; height: 90%">
-            
-            <g id="heatmapLayer"></g>
-            
-            <g id="layoutLayer"></g>
-            
-            <g id="arrowsLayer"></g>
-          </svg>
-        </div>
-
-        <div class="panel" id="panel3">
-          <canvas id="canvas1" class="plot-canvas"></canvas>
-        </div>
-
-        <div class="panel" id="panel4">
-          <canvas id="canvas2" class="plot-canvas"></canvas>
-        </div>
-      </div> -->

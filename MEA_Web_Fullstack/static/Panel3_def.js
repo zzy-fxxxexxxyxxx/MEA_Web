@@ -109,8 +109,11 @@ export function originalPeakEnlargement(processedData) {
   ctx.strokeStyle = "black";
   ctx.lineWidth = 1;
   channelData.forEach((val, i) => {
+    // 🔹 限制电压值，截断超出范围的部分
+    const clampedVal = Math.max(Math.min(val, voltageRange), -voltageRange);
+
     const x = mapX(t[i]);
-    const y = mapY(val);
+    const y = mapY(clampedVal);
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });

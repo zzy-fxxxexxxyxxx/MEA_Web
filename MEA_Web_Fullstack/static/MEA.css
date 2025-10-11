@@ -217,12 +217,12 @@ body {
 } */
 
 /* 左侧内容区域 */
-.tabcontent {
+/* .tabcontent {
   border: 1px solid #ccc;
   padding: 10px;
   height: 600px;
   display: none;
-}
+} */
 
 /* 输入框和按钮容器：横向排列 */
 /* .input-button-group {

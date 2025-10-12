@@ -1,10 +1,128 @@
-.left-panel{
-    padding: 1rem; /* 16px */
+/* ---------------------------------------颜色选择器相关--------------------------------------------------------- */
+
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  background: #0000;
+  border-radius: 15px;
+
+  margin-top: 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.color-label {
+  font-weight: 200;
+  font-size: 12px;
+  color: #000000;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 2px;
+}
+
+.custom-select {
+  position: relative;
+  width: 125px;
+  margin: 5 auto;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.select-trigger:hover {
+  border-color: #3498db;
+  transform: translateY(-2px);
+}
+
+.color-preview {
+  width: 100px;
+  height: 24px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-arrow {
+  margin-left: 5px;
+  font-size: 12px;
+  transition: transform 0.3s;
+  color: #7f8c8d;
+}
+
+.select-trigger.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.select-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  margin-top: 5px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  max-height: 100px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+}
+
+.select-options.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.option {
+  padding: 8px 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.option:hover {
+  background: #f5f9ff;
+  transform: translateX(5px);
+}
+
+.option-color {
+  width: 100%;
+  height: 22px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------------------------------主代码-------------------------------------------------------- */
+.left-panel {
+  padding: 1rem; /* 16px */
 }
 .tab-buttons > * + * {
-    margin-top: 0.25rem; /* 4px */
+  margin-top: 0.25rem; /* 4px */
 }
-.tab-buttons a{
+.tab-buttons a {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -15,8 +133,13 @@
   color: #374151; /* text-gray-700 */
   transition: all 300ms; /* transition-all-300 */
 }
-.tab-buttons a.active { 
-  background-color: rgba(59, 130, 246, 0.1); /* bg-primary/10 - 假设primary是blue-500 */
+.tab-buttons a.active {
+  background-color: rgba(
+    59,
+    130,
+    246,
+    0.1
+  ); /* bg-primary/10 - 假设primary是blue-500 */
   color: rgb(59, 130, 246); /* text-primary - 假设primary是blue-500 */
 }
 .tab-buttons a:hover:not(.active) {
@@ -30,154 +153,189 @@
 }
 /* 输入框和按钮容器：横向排列 */
 .input-button-group {
-    display: flex;
-    /* 横向排列 */
-    align-items: center;
-    /* 垂直居中 */
-    margin-right: 5px;
-    /* 与右边内容间距 */
-    margin-left: 5px;
-    /* 与左边内容间距 */
-    gap: 6px;
-    /* 输入框和按钮之间间距 */
+  display: flex;
+  /* 横向排列 */
+  align-items: center;
+  /* 垂直居中 */
+  margin-right: 5px;
+  /* 与右边内容间距 */
+  margin-left: 5px;
+  /* 与左边内容间距 */
+  gap: 6px;
+  /* 输入框和按钮之间间距 */
 }
 
 /* 输入框样式（直角） */
 .edit-field {
-    width: 90%;
-    height: 28px;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 0;
-    /* 直角 */
-    flex: 1;
-    /* 占满剩余空间 */
-    font-size: 14px;
-    transition: all 0.3s ease;
+  width: 90%;
+  height: 28px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  /* 直角 */
+  flex: 1;
+  /* 占满剩余空间 */
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
 /* 按钮样式（圆角） */
 .round-button {
-    width: 40px;
-    height: 28px;
-    padding: 2px 3px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    /* 圆角 */
-    background-color: #f3f0f0;
-    display: flex;
-    /* 启用 Flex */
-    justify-content: center;
-    /* 水平居中 */
-    align-items: center;
-    /* 垂直居中 */
-    cursor: pointer;
+  width: 40px;
+  height: 28px;
+  padding: 2px 3px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  /* 圆角 */
+  background-color: #f3f0f0;
+  display: flex;
+  /* 启用 Flex */
+  justify-content: center;
+  /* 水平居中 */
+  align-items: center;
+  /* 垂直居中 */
+  cursor: pointer;
 }
 
 .round-button:hover {
-    background-color: #ccc;
-    /* 悬停效果 */
+  background-color: #ccc;
+  /* 悬停效果 */
 }
 
 .form-label {
-    display: inline;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 0.25rem;
-    white-space: nowrap;
+  display: inline;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
 }
 
 .input-container {
-    margin-right: 5px;
-    /* 与右边内容间距 */
-    margin-left: 5px;
-    /* 与左边内容间距 */
-    position: relative;
-    width: 100%;
+  margin-right: 5px;
+  /* 与右边内容间距 */
+  margin-left: 5px;
+  /* 与左边内容间距 */
+  position: relative;
+  width: 100%;
 }
 
 .form-input {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
 }
 
 .Voltage-input {
-    width: 100%;
-    padding: 0.5rem 1.7rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    transition: all 0.3s ease;
+  width: 100%;
+  padding: 0.5rem 1.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
 }
 
 .form-input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    /* primary color */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  outline: none;
+  border-color: #3b82f6;
+  /* primary color */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 
 .Voltage-input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    /* primary color */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  outline: none;
+  border-color: #3b82f6;
+  /* primary color */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 .edit-field:focus {
-    outline: none;
-    border-color: #3b82f6;
-    /* primary color */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  outline: none;
+  border-color: #3b82f6;
+  /* primary color */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 
 .input-prefix {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 0.875rem;
-    pointer-events: none;
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 0.875rem;
+  pointer-events: none;
 }
 
 .input-unit {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6b7280;
-    font-size: 0.875rem;
-    pointer-events: none;
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 0.875rem;
+  pointer-events: none;
 }
 /* 按钮横向排列 */
 .form-button-group {
-    display: flex;
-    /* 横向排列 */
-    align-items: center;
-    /* 垂直居中 */
-    margin-right:5px;
-    /* 与右边内容间距 */
-    margin-left: 8px;
-    /* 与左边内容间距 */
-    gap: 12px;
-    /* 输入框和按钮之间间距 */
+  display: flex;
+  /* 横向排列 */
+  align-items: center;
+  /* 垂直居中 */
+  margin-right: 5px;
+  /* 与右边内容间距 */
+  margin-left: 8px;
+  /* 与左边内容间距 */
+  gap: 12px;
+  /* 输入框和按钮之间间距 */
 }
+
+/* ------------------------------------放大功能------------------------------ */
+/* 基础过渡 */
+.grid > div {
+  transition: all 0.3s ease;
+}
+
+/* 放大模式下只保留一个 panel 居中显示 */
+.single-panel-mode {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 🔍 放大后的 panel 占满 main，但不超出视口 */
+.single-panel-mode > div.expanded {
+  width: 95%;
+  height: 85vh; /* 稍小于视口高度，避免滚动条 */
+  max-width: 1400px; /* 限制最大宽度，避免太宽 */
+  transform: none; /* 移除 scale 放大 */
+  transition: all 0.4s ease;
+  z-index: 100;
+  overflow: hidden;
+}
+
+/* 内部内容自适应放大一点点，但不溢出 */
+.single-panel-mode > div.expanded canvas,
+.single-panel-mode > div.expanded svg {
+  width: 95% !important;
+  height: 95% !important;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+
 
 
 /*--------------------------------------*/
 
 /* 整体布局：左右两部分 */
-body {
+/* body {
   margin: 0;
   display: flex;
   height: 100vh;
   font-family: sans-serif;
-}
+} */
 
 /* 左侧 TabGroup + 内容 */
 /* .left-panel {
@@ -260,57 +418,58 @@ body {
 } */
 
 /* 把voltagegroup打包成组，无边框 */
-.spinner-group {
+/* .spinner-group {
   display: flex;
-  align-items: center; /* 垂直居中对齐 */
-  gap: 8px; /* 标签和输入框之间的间距 */
-  margin-top: 10px; /* 可选：距离上方元素的间距 */
-}
+  align-items: center; 
+  gap: 8px; 
+  margin-top: 10px; 
+} */
+
 /* 把voltagegroup打包成组，有边框 */
-.spinner-box {
-  border: 2px solid #ccc; /* 边框颜色和粗细 */
-  border-radius: 6px; /* 圆角 */
-  padding: 6px 10px; /* 内边距 */
+/* .spinner-box {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px; 
   display: flex;
-  align-items: center; /* 垂直居中 */
-  gap: 8px; /* label 和输入框的间距 */
-  width: fit-content; /* 框的宽度自适应内容 */
-}
+  align-items: center; 
+  gap: 8px; 
+  width: fit-content; 
+} */
 
-.number-spinner {
-  width: 60px; /* 输入框宽度，可根据需要调整 */
+/* .number-spinner {
+  width: 60px; 
   padding: 4px;
-}
+} */
 
-.round-button:hover {
-  background-color: #ccc; /* 悬停效果 */
-}
+/* .round-button:hover {
+  background-color: #ccc; 
+} */
 
 /* 右侧主内容区域 */
-.right-panel {
-  width: 85%; /* 右五分之四 */
+/* .right-panel {
+  width: 85%; 
   padding: 5px;
   box-sizing: border-box;
   display: grid;
   background-color: #f5f5f5;
-  grid-template-columns: 1fr 1fr; /* 两列 */
-  grid-template-rows: 1fr 1fr; /* 两行 */
-  gap: 5px; /* 间距 */
-}
+  grid-template-columns: 1fr 1fr; 
+  grid-template-rows: 1fr 1fr;
+  gap: 5px; 
+} */
 
-.right-panel .panel {
+/* .right-panel .panel {
   border: 1px solid #ccc;
-  padding: 00; /* 去掉 panel 内部默认 padding */
+  padding: 00;
   background-color: #fff;
-  display: flex; /* 启用 Flex 布局 */
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
-}
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+} */
 
-.right-panel .panel .plot-canvas {
-  width: calc(100%); /* 宽度 = 父容器宽度 - 左右 margin */
-  height: calc(100%); /* 高度 = 父容器高度 - 上下 margin */
+/* .right-panel .panel .plot-canvas {
+  width: calc(100%); 
+  height: calc(100%);
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box; /* 让 border 也计入 width/height */
-}
+  box-sizing: border-box; 
+} */

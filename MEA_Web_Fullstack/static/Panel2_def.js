@@ -173,7 +173,6 @@ export async function HeatCalculate(t0Row, fs, layout) {
 }
 
 //--------------------- 在 panel2 绘制电极阵列 + 轴对齐的四角凹陷边框 ------------------------
-
 export function drawGridOnPanel2() {
   const svg = document.getElementById("panel2SVG");
   if (!svg) return;
@@ -186,7 +185,7 @@ export function drawGridOnPanel2() {
     svg.appendChild(layoutLayer);
   }
 
-  // 清空 layoutLayer（不会影响热力图和箭头层）
+  // 清空 layoutLayer
   layoutLayer.innerHTML = "";
 
   const rows = 8;
@@ -194,21 +193,35 @@ export function drawGridOnPanel2() {
   const gridGap = 0; // 电极紧贴排列
   const notchDepthCells = 1;
 
+  // 获取父容器尺寸
   const rect = svg.parentElement.getBoundingClientRect();
   if (!rect) return;
-  svg.style.width = rect.width * 0.9 + "px";
-  svg.style.height = rect.height * 0.9 + "px";
 
-  const width = rect.width * 0.9;
-  const height = rect.height * 0.9;
+  const svgWidth = rect.width * 0.9;
+  const svgHeight = rect.height * 0.9;
 
-  const cellWidth = (width - (cols - 1) * gridGap) / cols;
-  const cellHeight = (height - (rows - 1) * gridGap) / rows;
+  // 设置动态 viewBox
+  svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
+  svg.style.width = svgWidth + "px";
+  svg.style.height = svgHeight + "px";
+
+  // 计算每个电极单元格尺寸
+  const cellWidth = (svgWidth - (cols - 1) * gridGap) / cols;
+  const cellHeight = (svgHeight - (rows - 1) * gridGap) / rows;
+
+  // 计算阵列实际大小
+  const arrayWidth = cols * cellWidth + (cols - 1) * gridGap;
+  const arrayHeight = rows * cellHeight + (rows - 1) * gridGap;
+
+  // 计算偏移量使阵列居中
+  const offsetX = (svgWidth - arrayWidth) / 2;
+  const offsetY = (svgHeight - arrayHeight) / 2;
 
   // ---------- 1) 绘制圆形电极 ----------
   const radius = Math.min(cellWidth, cellHeight) * 0.06;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
+      // 四个角不画电极
       if (
         (r === 0 && c === 0) ||
         (r === 0 && c === cols - 1) ||
@@ -217,8 +230,8 @@ export function drawGridOnPanel2() {
       )
         continue;
 
-      const cx = c * (cellWidth + gridGap) + cellWidth / 2;
-      const cy = r * (cellHeight + gridGap) + cellHeight / 2;
+      const cx = offsetX + c * (cellWidth + gridGap) + cellWidth / 2;
+      const cy = offsetY + r * (cellHeight + gridGap) + cellHeight / 2;
 
       const circle = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -237,11 +250,12 @@ export function drawGridOnPanel2() {
   // ---------- 2) 绘制缺角矩形外框 ----------
   const L = 1,
     T = 1,
-    R = width - 1,
-    B = height - 2;
+    R = arrayWidth - 1,
+    B = arrayHeight - 1;
   const nx = notchDepthCells * cellWidth;
   const ny = notchDepthCells * cellHeight;
 
+  // polygon 坐标以阵列左上角为原点
   const pts = [
     [L + nx, T],
     [R - nx, T],
@@ -257,16 +271,21 @@ export function drawGridOnPanel2() {
     [L + nx, T + ny],
   ];
 
+  // 将 polygon 平移到阵列居中位置
+  const ptsCentered = pts.map(([x, y]) => [x + offsetX, y + offsetY]);
+
   const polygon = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "polygon"
   );
-  polygon.setAttribute("points", pts.map((p) => p.join(",")).join(" "));
+  polygon.setAttribute("points", ptsCentered.map((p) => p.join(",")).join(" "));
   polygon.setAttribute("stroke", "black");
   polygon.setAttribute("fill", "none");
   polygon.setAttribute("stroke-width", 1);
+  polygon.setAttribute("data-type", "insetBorder");
   layoutLayer.appendChild(polygon);
 }
+
 
 export async function drawSmoothHeatmapTransparentCorners(
   data,
@@ -284,30 +303,33 @@ export async function drawSmoothHeatmapTransparentCorners(
   }
 
   // 清空 heatmapLayer 内部的旧 image
-  while (heatmapLayer.firstChild)
-    heatmapLayer.removeChild(heatmapLayer.firstChild);
+  heatmapLayer.innerHTML = "";
+
   // 清空箭头层
   let arrowsLayer = svg.querySelector("#arrowsLayer");
-  if (arrowsLayer) {
-    while (arrowsLayer.firstChild)
-      arrowsLayer.removeChild(arrowsLayer.firstChild);
-  }
+  if (arrowsLayer) arrowsLayer.innerHTML = "";
 
-  // 目标显示大小（CSS 像素）
-  // const cssWidth = Math.round(rect.width * 0.9) - 1;
-  // const cssHeight = Math.round(rect.height * 0.9) - 3;
-  const cssWidth = svg.clientWidth - 1;
-  const cssHeight = svg.clientHeight - 3;
+  // ---------- 计算 SVG 尺寸和 viewBox ----------
+  const rect = svg.parentElement.getBoundingClientRect();
+  const svgWidth = rect.width * 0.9;
+  const svgHeight = rect.height * 0.9;
 
-  // 临时 canvas 使用 devicePixelRatio 提升分辨率
-  const dpi = window.devicePixelRatio || 1;
-  const tmpCanvas = document.createElement("canvas");
-  tmpCanvas.width = Math.round(cssWidth * dpi);
-  tmpCanvas.height = Math.round(cssHeight * dpi);
-  const ctx = tmpCanvas.getContext("2d");
+  svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
+  svg.style.width = svgWidth + "px";
+  svg.style.height = svgHeight + "px";
 
   const rows = data.length;
   const cols = data[0].length;
+
+  // ---------- Canvas 绘制热力图 ----------
+  const dpi = window.devicePixelRatio || 1;
+  const tmpCanvas = document.createElement("canvas");
+
+  // 将热力图尺寸设置为与 SVG 容器一致
+  tmpCanvas.width = Math.round(svgWidth * dpi);
+  tmpCanvas.height = Math.round(svgHeight * dpi);
+  const ctx = tmpCanvas.getContext("2d");
+
   const customColors = ChooseColor(colorPickValue);
 
   // 四角 mask 不绘制
@@ -415,18 +437,37 @@ export async function drawSmoothHeatmapTransparentCorners(
 
   ctx.putImageData(imgData, 0, 0);
 
-  // 转 dataURL 并插入 heatmapLayer
+  // ---------- 插入 SVG image 并居中 ----------
   const dataURL = tmpCanvas.toDataURL();
   const img = document.createElementNS("http://www.w3.org/2000/svg", "image");
   img.setAttributeNS("http://www.w3.org/1999/xlink", "href", dataURL);
   img.setAttribute("href", dataURL);
-  img.setAttribute("x", 0);
-  img.setAttribute("y", 1);
-  img.setAttribute("width", cssWidth);
-  img.setAttribute("height", cssHeight);
+
+  // 将热力图居中：用偏移量计算
+  const imgWidth = cols; // 数据列数
+  const imgHeight = rows; // 数据行数
+  const scaleX = svgWidth / imgWidth;
+  const scaleY = svgHeight / imgHeight;
+  const offsetX = (svgWidth - imgWidth * scaleX) / 2;
+  const offsetY = (svgHeight - imgHeight * scaleY) / 2;
+
+  img.setAttribute("x", offsetX);
+  img.setAttribute("y", offsetY);
+  img.setAttribute("width", imgWidth * scaleX);
+  img.setAttribute("height", imgHeight * scaleY);
   img.setAttribute("preserveAspectRatio", "none");
+
   heatmapLayer.appendChild(img);
+
+  let layoutLayer = svg.querySelector("#layoutLayer");
+  if (layoutLayer) {
+    const borders = layoutLayer.querySelectorAll(
+      'polygon[data-type="insetBorder"]'
+    );
+    borders.forEach((p) => p.remove());
+  }
 }
+
 
 export function drawArrow(matrix, Factor) {
   const svg = document.getElementById("panel2SVG");
@@ -441,16 +482,12 @@ export function drawArrow(matrix, Factor) {
   }
 
   // 清空上一次的箭头
-  while (arrowsLayer.firstChild)
-    arrowsLayer.removeChild(arrowsLayer.firstChild);
+  arrowsLayer.innerHTML = "";
 
-  // -----------------------------
-  // 1️⃣ 插值函数
-  // -----------------------------
+  // ---------- 1️⃣ 插值函数 ----------
   function interp2_linear(mat, factor) {
     const rows = mat.length;
     const cols = mat[0].length;
-
     const rowInterp = [];
     for (let i = 0; i < rows; i++) {
       const row = mat[i];
@@ -468,13 +505,11 @@ export function drawArrow(matrix, Factor) {
       newRow.push(row[cols - 1]);
       rowInterp.push(newRow);
     }
-
     const newRows = (rows - 1) * factor + 1;
     const newCols = rowInterp[0].length;
     const result = Array.from({ length: newRows }, () =>
       Array(newCols).fill(0)
     );
-
     for (let j = 0; j < newCols; j++) {
       for (let i = 0; i < rows - 1; i++) {
         const a = rowInterp[i][j];
@@ -494,9 +529,7 @@ export function drawArrow(matrix, Factor) {
 
   const Vq = interp2_linear(matrix, Factor);
 
-  // -----------------------------
-  // 2️⃣ 计算梯度
-  // -----------------------------
+  // ---------- 2️⃣ 计算梯度 ----------
   function gradient(mat, step = 0.5) {
     const n = mat.length;
     const m = mat[0].length;
@@ -529,37 +562,32 @@ export function drawArrow(matrix, Factor) {
 
   let { DX, DY } = gradient(Vq, 1 / Factor);
 
-  // -----------------------------
-  // 3️⃣ 去掉边缘
-  // -----------------------------
+  // ---------- 3️⃣ 去掉边缘 ----------
   DX = DX.slice(1, -1).map((row) => row.slice(1, -1));
   DY = DY.slice(1, -1).map((row) => row.slice(1, -1));
 
   const rows = DX.length;
   const cols = DX[0].length;
 
-  // -----------------------------
-  // 4️⃣ 自动缩放箭头长度
-  // -----------------------------
+  // ---------- 4️⃣ 自动缩放箭头 ----------
   let minLen = Infinity,
     maxLen = -Infinity;
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < rows; i++)
     for (let j = 0; j < cols; j++) {
       if (isNaN(DX[i][j]) || isNaN(DY[i][j])) continue;
       const len = Math.sqrt(DX[i][j] ** 2 + DY[i][j] ** 2);
       minLen = Math.min(minLen, len);
       maxLen = Math.max(maxLen, len);
     }
-  }
 
   const maxArrowPixels = 25;
   const minArrowPixels = 15;
 
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < rows; i++)
     for (let j = 0; j < cols; j++) {
       if (isNaN(DX[i][j]) || isNaN(DY[i][j])) continue;
       const len = Math.sqrt(DX[i][j] ** 2 + DY[i][j] ** 2);
-      let scale =
+      const scale =
         maxLen === minLen
           ? (maxArrowPixels + minArrowPixels) / 2 / len
           : (minArrowPixels +
@@ -569,11 +597,20 @@ export function drawArrow(matrix, Factor) {
       DX[i][j] *= scale;
       DY[i][j] *= scale;
     }
-  }
 
-  // -----------------------------
-  // 5️⃣ 绘制箭头函数（添加到 arrowsLayer）
-  // -----------------------------
+  // ---------- 5️⃣ 设置动态 viewBox，使箭头居中 ----------
+  const rect = svg.parentElement.getBoundingClientRect();
+  const svgWidth = rect.width * 0.9;
+  const svgHeight = rect.height * 0.9;
+
+  svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
+  svg.style.width = svgWidth + "px";
+  svg.style.height = svgHeight + "px";
+
+  const offsetX = svgWidth / (cols + 1) / 2; // 居中偏移
+  const offsetY = svgHeight / (rows + 1) / 2;
+
+  // ---------- 6️⃣ 绘制箭头 ----------
   function drawArrowLine(x1, y1, x2, y2, color = "#808080") {
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     line.setAttribute("x1", x1);
@@ -615,133 +652,16 @@ export function drawArrow(matrix, Factor) {
     arrowsLayer.appendChild(tri);
   }
 
-  // -----------------------------
-  // 6️⃣ 映射网格到 SVG 并绘制箭头
-  // -----------------------------
-  const width = svg.clientWidth;
-  const height = svg.clientHeight;
+  // ---------- 7️⃣ 映射网格到 SVG 坐标 ----------
+  const stepX = svgWidth / (cols + 1);
+  const stepY = svgHeight / (rows + 1);
 
-  for (let i = 0; i < rows; i++) {
+  for (let i = 0; i < rows; i++)
     for (let j = 0; j < cols; j++) {
       if (isNaN(DX[i][j]) || isNaN(DY[i][j])) continue;
-      const x = width / (cols + 1) + j * (width / (cols + 1));
-      const y = height / (cols + 1) + i * (height / (cols + 1));
+      const x = stepX + j * stepX;
+      const y = stepY + i * stepY;
       drawArrowLine(x, y, x + DX[i][j], y + DY[i][j]);
     }
-  }
 }
 
-// ----------------画热力图 Canvas版本------------------------------------
-
-// export function drawSmoothHeatmapTransparentCorners(
-//   data,
-//   colorPickValue = "color1"
-// ) {
-//   const canvas = document.getElementById("panel2Canvas");
-//   if (!canvas) return;
-//   const ctx = canvas.getContext("2d");
-//   const panel = document.getElementById("panel2");
-//   if (!panel) return;
-
-//   const rows = 9;
-//   const cols = 9;
-
-//   const dpi = window.devicePixelRatio || 1;
-//   const cssWidth = panel.clientWidth * 0.9;
-//   const cssHeight = panel.clientHeight * 0.9;
-//   canvas.style.width = cssWidth + "px";
-//   canvas.style.height = cssHeight + "px";
-//   canvas.width = Math.round(cssWidth * dpi);
-//   canvas.height = Math.round(cssHeight * dpi);
-//   ctx.setTransform(dpi, 0, 0, dpi, 0, 0);
-//   ctx.clearRect(0, 0, cssWidth, cssHeight);
-
-//   const customColors = ChooseColor(colorPickValue);
-
-//   let minVal = Infinity,
-//     maxVal = -Infinity;
-//   for (let i = 0; i < rows; i++)
-//     for (let j = 0; j < cols; j++)
-//       if (!isNaN(data[i][j])) {
-//         minVal = Math.min(minVal, data[i][j]);
-//         maxVal = Math.max(maxVal, data[i][j]);
-//       }
-
-//   // 掩码矩阵：true=绘制，false=透明
-//   const mask = Array.from({ length: rows }, () => Array(cols).fill(true));
-//   mask[0][0] =
-//     mask[0][cols - 1] =
-//     mask[rows - 1][0] =
-//     mask[rows - 1][cols - 1] =
-//       false;
-
-//   //颜色无极变换的实现
-//   function valueToColor(val) {
-//     if (isNaN(val)) return [0, 0, 0, 0];
-//     const t = (val - minVal) / (maxVal - minVal);
-//     const scaled = t * (customColors.length - 1);
-//     const idx = Math.floor(scaled);
-//     const frac = scaled - idx; // 小数部分
-
-//     const [r1, g1, b1] = customColors[idx];
-//     const [r2, g2, b2] =
-//       customColors[Math.min(idx + 1, customColors.length - 1)];
-
-//     const r = r1 + (r2 - r1) * frac;
-//     const g = g1 + (g2 - g1) * frac;
-//     const b = b1 + (b2 - b1) * frac;
-
-//     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), 255];
-//   }
-
-//   const imgData = ctx.createImageData(canvas.width, canvas.height);
-//   for (let py = 0; py < canvas.height; py++) {
-//     for (let px = 0; px < canvas.width; px++) {
-//       const x = (px / canvas.width) * (cols - 1);
-//       const y = (py / canvas.height) * (rows - 1);
-
-//       const x0 = Math.floor(x),
-//         x1 = Math.min(x0 + 1, cols - 1);
-//       const y0 = Math.floor(y),
-//         y1 = Math.min(y0 + 1, rows - 1);
-
-//       // 四角透明判断
-//       let [r, g, b, a] = [0, 0, 0, 0]; // 默认透明
-//       if (mask[y0][x0] && mask[y0][x1] && mask[y1][x0] && mask[y1][x1]) {
-//         const v = [data[y0][x0], data[y0][x1], data[y1][x0], data[y1][x1]];
-//         const valid = v.map((vv) => (isNaN(vv) ? 0 : vv));
-//         const weight = v.map((vv) => (isNaN(vv) ? 0 : 1));
-
-//         const wx0 = 1 - (x - x0),
-//           wx1 = x - x0;
-//         const wy0 = 1 - (y - y0),
-//           wy1 = y - y0;
-
-//         const sumWeight =
-//           weight[0] * wx0 * wy0 +
-//           weight[1] * wx1 * wy0 +
-//           weight[2] * wx0 * wy1 +
-//           weight[3] * wx1 * wy1;
-//         let val = 0;
-//         if (sumWeight > 0) {
-//           val =
-//             (valid[0] * wx0 * wy0 +
-//               valid[1] * wx1 * wy0 +
-//               valid[2] * wx0 * wy1 +
-//               valid[3] * wx1 * wy1) /
-//             sumWeight;
-//         }
-//         [r, g, b, a] = valueToColor(val);
-//       }
-
-//       const idx = (py * canvas.width + px) * 4;
-//       imgData.data[idx] = r;
-//       imgData.data[idx + 1] = g;
-//       imgData.data[idx + 2] = b;
-//       imgData.data[idx + 3] = a; // 使用 alpha 控制透明度
-//     }
-//   }
-
-//   ctx.putImageData(imgData, 0, 0);
-//   drawGridOverlay(ctx, cssWidth, cssHeight);
-// }

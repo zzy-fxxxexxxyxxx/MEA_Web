@@ -7,7 +7,6 @@ export function drawGridOnPanel1() {
   // const panel = document.getElementById("panel1");
   const rect = canvas.parentElement.getBoundingClientRect();
 
-
   const gridGap = 3;
   // 高分屏适配
   const dpi = window.devicePixelRatio || 1;
@@ -17,7 +16,6 @@ export function drawGridOnPanel1() {
   // const cssHeight = panel.clientHeight * 0.9;
   const cssWidth = rect.width * 0.9;
   const cssHeight = rect.height * 0.9;
-
 
   canvas.style.width = cssWidth + "px";
   canvas.style.height = cssHeight + "px";
@@ -215,6 +213,8 @@ export function plotWaveformsOnGrid(processedData) {
       ctx.restore();
     }
   }
+  // ✅ 给 canvas 添加标签，表示有图
+  canvas.dataset.hasContent = "true";
 }
 
 //-------------------60个小图，没有降采样------------------------------------------------------------------

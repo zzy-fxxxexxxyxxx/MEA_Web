@@ -12,21 +12,18 @@
       href="{{ url_for('static', filename='favicon.ico') }}"
     />
     <link rel="stylesheet" href="{{ url_for('static', filename='MEA.css') }}" />
-    <!-- 如果是只用live sever测试前端，请用下面的路径 -->
-    <!-- <link
-      rel="icon"
-      type="image/x-icon"
-      href="../static/favicon.ico"
-    />
-    <link rel="stylesheet" href="../static/MEA.css"> -->
 
     <!-- Tailwind CSS (开发阶段用 CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Font Awesome -->
-    <link
+    <!-- <link
       href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
       rel="stylesheet"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
     <!-- Chart.js (保持原有依赖) -->
@@ -338,6 +335,40 @@
                 </div>
               </div>
 
+              <!-- 颜色选择器 -->
+              <!-- <div class="color-picker-container">
+                <div class="color-label">Color Picker:</div>
+                <div class="custom-select" id="colorPicker">
+                  <div class="select-trigger" id="selectTrigger">
+                    <div class="color-preview" id="selectedColorPreview"></div>
+                    <div class="dropdown-arrow">▼</div>
+                  </div>
+                  <div class="select-options" id="selectOptions">
+                    <div class="option" data-value="color1">
+                      <div class="option-color" id="preview-color1"></div>
+                    </div>
+                    <div class="option" data-value="color2">
+                      <div class="option-color" id="preview-color2"></div>
+                    </div>
+                    <div class="option" data-value="color3">
+                      <div class="option-color" id="preview-color3"></div>
+                    </div>
+                    <div class="option" data-value="color4">
+                      <div class="option-color" id="preview-color4"></div>
+                    </div>
+                    <div class="option" data-value="color5">
+                      <div class="option-color" id="preview-color5"></div>
+                    </div>
+                    <div class="option" data-value="color6">
+                      <div class="option-color" id="preview-color6"></div>
+                    </div>
+                    <div class="option" data-value="color7">
+                      <div class="option-color" id="preview-color7"></div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
               <!-- 功能按钮 -->
               <div class="form-button-group mt-4">
                 <button
@@ -525,11 +556,9 @@
                 </button>
               </div>
             </div>
-            <!-- <div
-              class="flex items-center justify-center h-[350px] bg-gray-50 rounded-lg p-4 relative"
-            > -->
+
             <div
-              class="overflow-auto bg-gray-50 rounded-lg p-4 flex items-center justify-center h-[350px]"
+              class="overflow-auto bg-gray-50 rounded-lg flex items-center justify-center h-[350px]"
             >
               <!-- ✅ 保留原逻辑的 SVG -->
               <svg id="panel2SVG" style="width: 90%; height: 90%">

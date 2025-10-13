@@ -197,7 +197,7 @@ export function drawGridOnPanel2() {
   const rect = svg.parentElement.getBoundingClientRect();
   if (!rect) return;
 
-  const svgWidth = rect.width * 0.9;
+  const svgWidth = rect.width * 0.8;
   const svgHeight = rect.height * 0.9;
 
   // 设置动态 viewBox
@@ -311,7 +311,7 @@ export async function drawSmoothHeatmapTransparentCorners(
 
   // ---------- 计算 SVG 尺寸和 viewBox ----------
   const rect = svg.parentElement.getBoundingClientRect();
-  const svgWidth = rect.width * 0.9;
+  const svgWidth = rect.width * 0.8;
   const svgHeight = rect.height * 0.9;
 
   svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
@@ -600,7 +600,7 @@ export function drawArrow(matrix, Factor) {
 
   // ---------- 5️⃣ 设置动态 viewBox，使箭头居中 ----------
   const rect = svg.parentElement.getBoundingClientRect();
-  const svgWidth = rect.width * 0.9;
+  const svgWidth = rect.width * 0.8;
   const svgHeight = rect.height * 0.9;
 
   svg.setAttribute("viewBox", `0 0 ${svgWidth} ${svgHeight}`);
@@ -664,4 +664,5 @@ export function drawArrow(matrix, Factor) {
       drawArrowLine(x, y, x + DX[i][j], y + DY[i][j]);
     }
 }
+
 

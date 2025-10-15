@@ -449,4 +449,40 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   });
+
+  //------------------------------------删除按键---------------------------------------------
+  // 1️⃣ Panel1：重新绘制网格
+  document.getElementById("refreshPanel1").addEventListener("click", () => {
+    drawGridOnPanel1();
+    document.getElementById("panel1Canvas").dataset.hasContent = "false";
+  });
+
+  // 2️⃣ Panel2：清空 heatmapLayer 和 arrowsLayer 内容
+  document.getElementById("refreshPanel2").addEventListener("click", () => {
+    const heatmapLayer = document.getElementById("heatmapLayer");
+    const arrowsLayer = document.getElementById("arrowsLayer");
+    if (heatmapLayer) heatmapLayer.innerHTML = "";
+    if (arrowsLayer) arrowsLayer.innerHTML = "";
+    drawGridOnPanel2();
+  });
+
+  // 3️⃣ Panel3：清空 canvas1 内容
+  document.getElementById("refreshPanel3").addEventListener("click", () => {
+    const canvas1 = document.getElementById("canvas1");
+    if (canvas1) {
+      const ctx = canvas1.getContext("2d");
+      ctx.clearRect(0, 0, canvas1.width, canvas1.height);
+    }
+    canvas1.dataset.hasContent = "false";
+  });
+
+  // 4️⃣ Panel4：清空 canvas2 内容
+  document.getElementById("refreshPanel4").addEventListener("click", () => {
+    const canvas2 = document.getElementById("canvas2");
+    if (canvas2) {
+      const ctx = canvas2.getContext("2d");
+      ctx.clearRect(0, 0, canvas2.width, canvas2.height);
+    }
+    canvas2.dataset.hasContent = "false";
+  });
 });

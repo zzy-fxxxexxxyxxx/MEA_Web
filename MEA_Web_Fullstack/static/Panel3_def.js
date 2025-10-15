@@ -180,6 +180,8 @@ export function originalPeakEnlargement(processedData) {
   ctx.textAlign = "center";
   ctx.fillText("Voltage (μV)", 0, 0);
   ctx.restore();
+
+  canvas.dataset.hasContent = "true";
 }
 
 //---------------------------有坐标轴，没有降采样-----------------------------------------------

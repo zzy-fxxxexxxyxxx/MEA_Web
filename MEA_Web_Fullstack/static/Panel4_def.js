@@ -207,6 +207,8 @@ export async function plotAllSignals(processedData) {
   ctx.textAlign = "center";
   ctx.fillText("Voltage (μV)", 0, 0);
   ctx.restore();
+
+  canvas2.dataset.hasContent = "true";
 }
 
 // //------------------绘制All Signals----------------------------------------------------------------------

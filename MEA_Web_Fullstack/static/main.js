@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       processedData.fs,
       processedData.layout
     );
-
+    drawGridOnPanel2();
     drawSmoothHeatmapTransparentCorners(HeatMapData, "color1");
   });
 
@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       processedData.fs,
       processedData.layout
     );
-
+    drawGridOnPanel2();
     drawSmoothHeatmapTransparentCorners(HeatMapData, "color1");
   });
 
@@ -486,3 +486,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     canvas2.dataset.hasContent = "false";
   });
 });
+

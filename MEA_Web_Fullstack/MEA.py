@@ -40,6 +40,10 @@ def process_signal():
 
 
 
-# 启动 Flask
+# # 启动 Flask
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", port=5000, debug=True)
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))  # $PORT 来自 Render，5000 仅作本地测试
+    app.run(host="0.0.0.0", port=port, debug=True)
